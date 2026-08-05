@@ -10,20 +10,32 @@ The content in `resume.tex` is placeholder text — swap it for your own.
 
 You need a TeX distribution (which provides `pdflatex`). Pick one:
 
-### Option 1 — MacTeX (recommended)
+### Option 1 — TeX Live via Homebrew formula (recommended)
 
-The full distribution. Large (~6 GB) but includes every package you're likely to need,
-so nothing breaks later.
-
-With [Homebrew](https://brew.sh):
+The full distribution, installed into the Homebrew prefix. ~4.6 GB, and unlike the cask
+options it needs **no administrator password**:
 
 ```bash
-brew install --cask mactex
+brew install texlive
+```
+
+Binaries land in `/opt/homebrew/bin` (Apple Silicon) or `/usr/local/bin` (Intel), which
+Homebrew already has on your `PATH`.
+
+### Option 2 — MacTeX
+
+The same distribution packaged by the TeX Users Group, installed to `/Library/TeX`. Use
+this if you want the bundled GUI apps (TeXShop, BibDesk) or prefer the official installer.
+Requires an administrator password.
+
+```bash
+brew install --cask mactex          # ~6 GB, includes GUI apps
+brew install --cask mactex-no-gui   # ~4 GB, command line only
 ```
 
 Or download the installer directly from [tug.org/mactex](https://tug.org/mactex/).
 
-### Option 2 — BasicTeX (minimal)
+### Option 3 — BasicTeX (minimal)
 
 A ~100 MB subset. Faster to install, but you'll have to add packages yourself.
 
@@ -40,14 +52,14 @@ sudo tlmgr install charter titlesec enumitem
 
 ### After installing
 
-The TeX binaries land in `/Library/TeX/texbin`, which a new install adds to your `PATH` —
-but your current shell session won't see it yet. Open a new terminal, then verify:
+Open a new terminal so your shell picks up the new binaries, then verify:
 
 ```bash
 pdflatex --version
 ```
 
-If that still isn't found, add it to your shell profile:
+If you installed MacTeX or BasicTeX and that isn't found, their binaries live in
+`/Library/TeX/texbin`. Add it to your shell profile:
 
 ```bash
 echo 'export PATH="/Library/TeX/texbin:$PATH"' >> ~/.zshrc
@@ -61,12 +73,8 @@ pdflatex resume.tex
 ```
 
 This writes `resume.pdf` alongside a few auxiliary files (`.aux`, `.log`, `.out`) that are
-already gitignored. If you don't want to add `/Library/TeX/texbin` to your `PATH`, call the
-binary by its full path instead:
-
-```bash
-/Library/TeX/texbin/pdflatex resume.tex
-```
+already gitignored. The checked-in `resume.pdf` is what this source produces, so you can
+see the rendered result without building it yourself.
 
 ## Editing in VS Code
 
