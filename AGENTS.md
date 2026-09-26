@@ -34,7 +34,7 @@ into this repository — it is a public template, not anyone's actual resume.
 
 ```bash
 pnpm install    # once
-pnpm pdf        # validates resume.json, renders resume.tex, runs pdflatex twice
+pnpm pdf        # validates resume.json, renders resume.tex, runs pdflatex
 ```
 
 If `pdflatex` is not on your `PATH`, see README.md. After a template change, also
