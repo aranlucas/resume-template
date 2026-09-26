@@ -21,6 +21,10 @@ on:
         description: Output name without extension; writes <output>.tex and <output>.pdf
         type: string
         default: resume
+      template:
+        description: Template in templates/ to render with (resume or cv)
+        type: string
+        default: resume
       template-ref:
         description: Ref of aranlucas/resume-template to build with
         type: string
@@ -57,8 +61,9 @@ jobs:
         env:
           RESUME: ${{ inputs.resume }}
           OUTPUT: ${{ inputs.output }}
+          TEMPLATE: ${{ inputs.template }}
         run: |
-          node .resume-template/bin/resume-template.mjs "$RESUME" "$OUTPUT"
+          node .resume-template/bin/resume-template.mjs "$RESUME" "$OUTPUT" --template "$TEMPLATE"
           pdfinfo "$OUTPUT.pdf" 2>/dev/null | grep Pages || true
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
