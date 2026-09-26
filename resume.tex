@@ -1,3 +1,5 @@
+% Generated from a JSON Resume file by resume-template
+% (https://github.com/aranlucas/resume-template). Edit the JSON instead.
 \documentclass[letterpaper,10pt]{article}
 
 \usepackage[T1]{fontenc}
@@ -15,7 +17,8 @@
 \setlist[description]{leftmargin=0pt, labelwidth=0pt, labelsep=0pt, topsep=0pt, itemsep=3pt, parsep=0pt}
 % Add resume color
 \definecolor{maincolor}{rgb}{0.0, 0.2, 0.4}
-\hypersetup{urlcolor=maincolor, linkcolor=maincolor}
+\hypersetup{urlcolor=maincolor, linkcolor=maincolor,
+  pdftitle={Jane Doe - Senior Software Engineer}, pdfauthor={Jane Doe}}
 
 % Format section styling
 \raggedbottom\raggedright\titleformat{\section}{
@@ -31,7 +34,7 @@
   \end{tabular*}%
 }
 
-% Ensure the generated pdf is machine readable / ATS parsable
+% Ensure that generate pdf is machine readable/ATS parsable
 \input{glyphtounicode}
 \pdfgentounicode=1
 
@@ -46,7 +49,7 @@
   \href{mailto:jane.doe@example.com}{jane.doe@example.com} $|$
   \href{https://linkedin.com/in/janedoe}{linkedin.com/in/janedoe} $|$
   \href{https://github.com/janedoe}{github.com/janedoe} $|$
-  \href{https://example.com}{janedoe.example.com}
+  \href{https://janedoe.example.com}{janedoe.example.com}
 \end{center}
 
 %-----------SUMMARY-----------------
@@ -59,11 +62,10 @@ Senior software engineer with 10+ years across a large delivery marketplace, a m
   \item
         \resumeEntry{Company A}{City, ST}{Senior Software Engineer}{Oct 2023 -- Present}
         \begin{itemize}
-          \item Built the prototype that became the company's \textbf{conversational shopping assistant}, launched Jun 2026: builds carts from recipe links, cookbook photos, and photographed shopping lists across roughly 800,000 products, personalized from order history and dietary preferences; the feature raised average order totals.
+          \item Built the prototype that became the company's conversational shopping assistant, launched Jun 2026: builds carts from recipe links, cookbook photos, and photographed shopping lists across roughly 800,000 products, personalized from order history and dietary preferences; the feature raised average order totals.
           \item Set the agent-platform direction: wrote the strategy and campaigned it through leadership, moving the company from third-party agent-protocol ordering---its first external agent integration---to a first-party in-app assistant.
           \item Own platform and reliability for the multi-agent assistant: the grocery domain agent plus the shared tool layer that also powers the restaurant agent, the third-party chat-app integration, and the company's new developer CLI.
           \item Built the retail division's integration-test framework and moved test execution from Jenkins to Buildkite on Kubernetes; golden-path ordering tests now run against segregated test tenants as blocking CI gates.
-          \item Shipped a navigation-pills discovery surface used for seasonal event merchandising.
           \item Mentor engineers across the org on agent architecture and tool design, and drive team adoption of AI-assisted development---with architecture and security review before merge.
         \end{itemize}
   \item
@@ -80,7 +82,7 @@ Senior software engineer with 10+ years across a large delivery marketplace, a m
           \item Built regulatory transaction-reporting systems for two European financial intelligence units, meeting the requirements for the company's payments business in those markets.
         \end{itemize}
   \item
-        \resumeEntry{Earlier Experience}{City, ST / City, ST}{Software Engineering Intern (x2)}{2013 -- 2014}
+        \resumeEntry{Earlier Experience}{City, ST}{Company D Software Engineering Intern; Company E Software Engineering Intern}{2013 -- 2014}
         \begin{itemize}
           \item Integrated a subscription book catalog into a social reading platform; tested handheld device software (smoke, regression, GUI).
         \end{itemize}
@@ -91,7 +93,7 @@ Senior software engineer with 10+ years across a large delivery marketplace, a m
 \begin{description}
   \item
         \begin{tabular*}{\linewidth}{@{}l@{\extracolsep{\fill}}r@{}}
-          \textbf{Multi-Agent Platform} & \textit{\small Personal Project} \\
+          \href{https://github.com/janedoe/agents}{\textbf{Multi-Agent Platform}} & \textit{\small Personal Project} \\
         \end{tabular*}
         \begin{itemize}
           \item Run Python agents in production behind a FastAPI gateway, with Next.js web and Expo mobile clients sharing state over a streaming UI protocol.
@@ -113,6 +115,6 @@ Senior software engineer with 10+ years across a large delivery marketplace, a m
   \item \textbf{Languages:} Java, Kotlin, TypeScript, Go, Python, Ruby, SQL
   \item \textbf{Technologies:} React, Next.js, Expo, AWS, CDK, DynamoDB, Java Spring, Ruby on Rails, FastAPI, Docker, Kubernetes
   \item \textbf{AI/Agents:} MCP, Vercel AI SDK, Google ADK, Cloudflare Agents SDK, AG-UI, CopilotKit
-\end{description}
+  \item \textbf{Writing:} \href{https://janedoe.example.com/blog/agent-tools}{Designing Tools for Agents}\end{description}
 
 \end{document}

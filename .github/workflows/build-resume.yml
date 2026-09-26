@@ -1,0 +1,82 @@
+# Reusable workflow: builds a JSON Resume file into a PDF with this template.
+# On push it commits the .tex/.pdf back to the branch; on pull requests it only
+# uploads them as an artifact. Callers need `permissions: contents: write`.
+#
+#   jobs:
+#     pdf:
+#       uses: aranlucas/resume-template/.github/workflows/build-resume.yml@main
+#       with:
+#         output: Jane_Doe_Resume
+
+name: Build resume
+
+on:
+  workflow_call:
+    inputs:
+      resume:
+        description: JSON Resume file, relative to the caller's repository root
+        type: string
+        default: resume.json
+      output:
+        description: Output name without extension; writes <output>.tex and <output>.pdf
+        type: string
+        default: resume
+      template-ref:
+        description: Ref of aranlucas/resume-template to build with
+        type: string
+        default: main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: aranlucas/resume-template
+          ref: ${{ inputs.template-ref }}
+          path: .resume-template
+          persist-credentials: false
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+        with:
+          package_json_file: .resume-template/package.json
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+      - name: Install TeX Live
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -yq --no-install-recommends \
+            texlive-latex-base texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended
+      - name: Install template
+        run: pnpm install --frozen-lockfile --prod --dir .resume-template
+      - name: Build PDF
+        env:
+          RESUME: ${{ inputs.resume }}
+          OUTPUT: ${{ inputs.output }}
+        run: |
+          node .resume-template/bin/resume-template.mjs "$RESUME" "$OUTPUT"
+          pdfinfo "$OUTPUT.pdf" 2>/dev/null | grep Pages || true
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: resume
+          path: |
+            ${{ inputs.output }}.tex
+            ${{ inputs.output }}.pdf
+      - name: Commit PDF
+        if: github.event_name == 'push'
+        env:
+          OUTPUT: ${{ inputs.output }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$OUTPUT.tex" "$OUTPUT.pdf"
+          if git diff --cached --quiet; then
+            echo "PDF unchanged"
+          else
+            git commit -m "Rebuild $OUTPUT.pdf"
+            git push
+          fi

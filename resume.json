@@ -1,0 +1,121 @@
+{
+  "$schema": "https://raw.githubusercontent.com/jsonresume/resume-schema/v1.2.1/schema.json",
+  "basics": {
+    "name": "Jane Doe",
+    "label": "Senior Software Engineer",
+    "email": "jane.doe@example.com",
+    "phone": "(555) 123-4567",
+    "url": "https://janedoe.example.com",
+    "summary": "Senior software engineer with 10+ years across a large delivery marketplace, a major cloud provider, and a global e-commerce company. Built the prototype that became a flagship conversational shopping agent and carried it through launch; now operates at platform scope, owning the tool layer that internal domain agents and external integrations build on, with AI coding tools in the daily workflow.",
+    "profiles": [
+      {
+        "network": "LinkedIn",
+        "username": "janedoe",
+        "url": "https://linkedin.com/in/janedoe"
+      },
+      {
+        "network": "GitHub",
+        "username": "janedoe",
+        "url": "https://github.com/janedoe"
+      }
+    ]
+  },
+  "work": [
+    {
+      "name": "Company A",
+      "position": "Senior Software Engineer",
+      "location": "City, ST",
+      "startDate": "2023-10",
+      "highlights": [
+        "Built the prototype that became the company's conversational shopping assistant, launched Jun 2026: builds carts from recipe links, cookbook photos, and photographed shopping lists across roughly 800,000 products, personalized from order history and dietary preferences; the feature raised average order totals.",
+        "Set the agent-platform direction: wrote the strategy and campaigned it through leadership, moving the company from third-party agent-protocol ordering—its first external agent integration—to a first-party in-app assistant.",
+        "Own platform and reliability for the multi-agent assistant: the grocery domain agent plus the shared tool layer that also powers the restaurant agent, the third-party chat-app integration, and the company's new developer CLI.",
+        "Built the retail division's integration-test framework and moved test execution from Jenkins to Buildkite on Kubernetes; golden-path ordering tests now run against segregated test tenants as blocking CI gates.",
+        "Mentor engineers across the org on agent architecture and tool design, and drive team adoption of AI-assisted development—with architecture and security review before merge."
+      ]
+    },
+    {
+      "name": "Company B",
+      "position": "Software Development Engineer – IoT Services",
+      "location": "City, ST",
+      "startDate": "2019-07",
+      "endDate": "2022-07",
+      "highlights": [
+        "Built and launched an industrial IoT monitoring control plane (Go, DynamoDB, API Gateway), announced at the company's flagship conference; drove it through operational readiness review to GA.",
+        "Led a console migration from Angular to React on a microfrontend architecture with infrastructure-as-code pipelines, letting 5+ sub-teams ship independently and cutting release lead time from weeks to days.",
+        "Designed SSO federation for the monitoring product and built synthetic canaries that caught console regressions before release."
+      ]
+    },
+    {
+      "name": "Company C",
+      "position": "Software Development Engineer – Compliance Technologies",
+      "location": "City, ST",
+      "startDate": "2015-07",
+      "endDate": "2019-07",
+      "highlights": [
+        "Built a secure platform (Ruby on Rails, Java Spring) for anti-money-laundering and identity-theft investigations, with end-to-end encryption, granular access controls, and audit logging.",
+        "Built regulatory transaction-reporting systems for two European financial intelligence units, meeting the requirements for the company's payments business in those markets."
+      ]
+    },
+    {
+      "name": "Company D",
+      "position": "Software Engineering Intern",
+      "location": "City, ST",
+      "startDate": "2014-05",
+      "endDate": "2014-08",
+      "highlights": ["Integrated a subscription book catalog into a social reading platform."]
+    },
+    {
+      "name": "Company E",
+      "position": "Software Engineering Intern",
+      "location": "City, ST",
+      "startDate": "2013-05",
+      "endDate": "2013-08",
+      "highlights": ["Tested handheld device software (smoke, regression, GUI)."]
+    }
+  ],
+  "projects": [
+    {
+      "name": "Multi-Agent Platform",
+      "type": "Personal Project",
+      "url": "https://github.com/janedoe/agents",
+      "highlights": [
+        "Run Python agents in production behind a FastAPI gateway, with Next.js web and Expo mobile clients sharing state over a streaming UI protocol.",
+        "Protocol-backed tools for groceries, fitness, travel, trends, and public resume Q&A; the grocery tool started as the shopping-assistant prototype."
+      ]
+    }
+  ],
+  "publications": [
+    {
+      "name": "Designing Tools for Agents",
+      "publisher": "Personal blog",
+      "releaseDate": "2026-03",
+      "url": "https://janedoe.example.com/blog/agent-tools",
+      "summary": "What makes a tool easy for an LLM agent to call correctly."
+    }
+  ],
+  "education": [
+    {
+      "institution": "State University",
+      "location": "City, ST",
+      "area": "Computer Engineering",
+      "studyType": "B.S.",
+      "score": "cum laude",
+      "endDate": "2015-05"
+    }
+  ],
+  "skills": [
+    {
+      "name": "Languages",
+      "keywords": ["Java", "Kotlin", "TypeScript", "Go", "Python", "Ruby", "SQL"]
+    },
+    {
+      "name": "Technologies",
+      "keywords": ["React", "Next.js", "Expo", "AWS", "CDK", "DynamoDB", "Java Spring", "Ruby on Rails", "FastAPI", "Docker", "Kubernetes"]
+    },
+    {
+      "name": "AI/Agents",
+      "keywords": ["MCP", "Vercel AI SDK", "Google ADK", "Cloudflare Agents SDK", "AG-UI", "CopilotKit"]
+    }
+  ]
+}

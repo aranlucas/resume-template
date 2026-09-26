@@ -1,0 +1,124 @@
+<# LaTeX resume template. Content comes from a JSON Resume file; render with
+   `resume-template <resume.json>`. Nunjucks syntax with LaTeX-safe delimiters:
+   << value | filter >>, <% for/if %>, and filters tex, url, date, dates, displayUrl,
+   condense (merges internships into one entry). #>
+% Generated from a JSON Resume file by resume-template
+% (https://github.com/aranlucas/resume-template). Edit the JSON instead.
+\documentclass[letterpaper,10pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage{charter}
+\linespread{1.04}
+\usepackage[margin=0.45in, top=0.35in, bottom=0.35in]{geometry}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage[colorlinks=true]{hyperref}
+\usepackage{xcolor}
+
+\renewcommand{\labelitemi}{$\bullet$}
+% Adjust space between bullet points
+\setlist[itemize]{topsep=1pt, leftmargin=1.2em, labelsep=4pt, itemsep=2.5pt, parsep=0pt}
+\setlist[description]{leftmargin=0pt, labelwidth=0pt, labelsep=0pt, topsep=0pt, itemsep=3pt, parsep=0pt}
+% Add resume color
+\definecolor{maincolor}{rgb}{0.0, 0.2, 0.4}
+\hypersetup{urlcolor=maincolor, linkcolor=maincolor,
+  pdftitle={<< basics.name | tex >> - << basics.label | tex >>}, pdfauthor={<< basics.name | tex >>}}
+
+% Format section styling
+\raggedbottom\raggedright\titleformat{\section}{
+  \bfseries\color{maincolor}\vspace{-6pt}\raggedright\large
+}{}{0em}{}[\color{maincolor}\titlerule\vspace{-4pt}]
+\titlespacing*{\section}{0pt}{7pt}{9pt}
+
+% Two-row entry header used by Experience/Projects/Education: name+location, title+dates
+\newcommand{\resumeEntry}[4]{%
+  \begin{tabular*}{\linewidth}{@{}l@{\extracolsep{\fill}}r@{}}
+    \textbf{#1} & #2 \\
+    \textit{\small #3} & \textit{\small #4} \\
+  \end{tabular*}%
+}
+
+% Ensure that generate pdf is machine readable/ATS parsable
+\input{glyphtounicode}
+\pdfgentounicode=1
+
+\pagestyle{empty}
+
+\begin{document}
+
+%----------HEADING-----------------
+\begin{center}
+  \textbf{\huge \color{maincolor}{<< basics.name | tex >>}} \\ \vspace{2pt}
+  \small << basics.phone | tex >> $|$
+  \href{mailto:<< basics.email >>}{<< basics.email | tex >>} $|$
+<% for profile in basics.profiles %>
+  \href{<< profile.url | url >>}{<< profile.url | displayUrl | tex >>} $|$
+<% endfor %>
+  \href{<< basics.url | url >>}{<< basics.url | displayUrl | tex >>}
+\end{center}
+
+%-----------SUMMARY-----------------
+\section{Summary}
+<< basics.summary | tex >>
+
+%-----------EXPERIENCE-----------------
+\section{Experience}
+\begin{description}
+<% for job in work | reject("internship") %>
+  \item
+        \resumeEntry{<< job.name | tex >>}{<< job.location | tex >>}{<< job.position | tex >>}{<< job | dates | tex >>}
+        \begin{itemize}
+<% for highlight in job.highlights %>
+          \item << highlight | tex >>
+<% endfor %>
+        \end{itemize}
+<% endfor %>
+<% set internships = work | select("internship") %>
+<% if internships | length %>
+<% set earlier = internships | condense %>
+  \item
+        \resumeEntry{<< earlier.name | tex >>}{<< earlier.location | tex >>}{<< earlier.position | tex >>}{<< earlier.dates | tex >>}
+        \begin{itemize}
+          \item << earlier.highlight | tex >>
+        \end{itemize}
+<% endif %>
+\end{description}
+
+%-----------PROJECTS-----------------
+\section{Selected Projects}
+\begin{description}
+<% for project in projects %>
+  \item
+        \begin{tabular*}{\linewidth}{@{}l@{\extracolsep{\fill}}r@{}}
+          \href{<< project.url | url >>}{\textbf{<< project.name | tex >>}} & \textit{\small << project.type | tex >>} \\
+        \end{tabular*}
+        \begin{itemize}
+<% for highlight in project.highlights %>
+          \item << highlight | tex >>
+<% endfor %>
+        \end{itemize}
+<% endfor %>
+\end{description}
+
+%-----------EDUCATION-----------------
+\section{Education}
+\begin{description}
+<% for school in education %>
+  \item
+        \resumeEntry{<< school.institution | tex >>}{<< school.location | tex >>}{<< [school.studyType, school.area, school.score] | join(", ") | tex >>}{<< school.endDate | date >>}
+<% endfor %>
+\end{description}
+
+%-----------SKILLS-----------------
+
+\section{Skills}
+\begin{description}
+<% for skill in skills %>
+  \item \textbf{<< skill.name | tex >>:} << skill.keywords | join(", ") | tex >>
+<% endfor %>
+<% if publications | length %>
+  \item \textbf{Writing:} <% for post in publications %>\href{<< post.url | url >>}{<< post.name | tex >>}<% if not loop.last %>; <% endif %><% endfor %>
+<% endif %>
+\end{description}
+
+\end{document}
