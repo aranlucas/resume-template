@@ -1,14 +1,14 @@
 # Resume Template — Agent Notes
 
-This repository renders a JSON Resume file into a one-page LaTeX resume. The layout is
-`templates/resume.tex` (Nunjucks with LaTeX-safe delimiters: `<< value | filter >>`,
+This repository renders a JSON Resume file into a LaTeX resume. The layouts are
+`templates/resume.tex` (one page) and `templates/cv.tex` (multi-page CV) (Nunjucks with LaTeX-safe delimiters: `<< value | filter >>`,
 `<% for %>`, `<# comment #>`; escape every value with `| tex`, or `| url` inside `\href{}`).
-Other repos (notably aranlucas/resume) build their PDFs with it through the reusable
+Other repos (aranlucas/resume with `resume`, aranlucas/resume-yani with `cv`) build their PDFs with it through the reusable
 workflow and the `resume-template` CLI, so layout changes reach them too.
 
 ## Main Files
 
-- `templates/resume.tex` — the LaTeX layout.
+- `templates/resume.tex`, `templates/cv.tex` — the LaTeX layouts.
 - `lib/` — loading, schema validation, template filters, pdflatex; `bin/` — the CLI.
 - `resume.json` — placeholder example content.
 - `resume.tex` / `resume.pdf` — generated from `resume.json`, checked in so the rendered
@@ -24,7 +24,7 @@ into this repository — it is a public template, not anyone's actual resume.
 
 ## Editing Strategy
 
-- Keep the rendered output to one page.
+- Keep `resume.tex` output to one page.
 - Preserve the existing structure: the `\resumeEntry{org}{location}{title}{dates}` macro
   and the `maincolor` accent are the template's defining features.
 - Leave `\input{glyphtounicode}` and `\pdfgentounicode=1` in place; they are what keep the
@@ -38,8 +38,8 @@ pnpm pdf        # validates resume.json, renders resume.tex, runs pdflatex twice
 ```
 
 If `pdflatex` is not on your `PATH`, see README.md. After a template change, also
-rebuild a consumer (for example `pnpm pdf` in `../resume`) to check real content still
-fits on one page.
+rebuild the consumers (`pnpm pdf` in `../resume` and `../resume-yani`) to check real
+content still renders cleanly, and `resume` still fits on one page.
 
 Verify the generated PDF:
 

@@ -1,8 +1,16 @@
 # LaTeX Resume Template
 
-A one-page LaTeX resume with ATS-readable PDF output, rendered from a
-[JSON Resume](https://jsonresume.org/schema) file. [`resume.json`](resume.json)
-is a placeholder example; [`resume.pdf`](resume.pdf) is what it renders to.
+ATS-readable LaTeX resumes rendered from a [JSON Resume](https://jsonresume.org/schema)
+file. [`resume.json`](resume.json) is a placeholder example; [`resume.pdf`](resume.pdf)
+is what it renders to.
+
+Two templates in [`templates/`](templates):
+
+- `resume` (default): one page, 10pt Charter. Work, projects, education, skills.
+- `cv`: multi-page, 12pt Latin Modern with contact icons. Education, work, research,
+  publications, volunteer, leadership, awards, skills, certificates, languages and
+  interests, each skipped when empty. Section titles can be renamed with `meta.titles`;
+  the comment at the top of [`cv.tex`](templates/cv.tex) lists its custom fields.
 
 ## Use it from your own repo
 
@@ -27,9 +35,10 @@ jobs:
       contents: write
     with:
       output: Jane_Doe_Resume # default: resume
+      template: cv # default: resume
 ```
 
-Dates must be `YYYY-MM`. Jobs whose position ends in "Intern" are merged into one
+Dates must be `YYYY-MM` (or `YYYY`, e.g. for awards). Jobs whose position ends in "Intern" are merged into one
 "Earlier Experience" entry, and `publications` render as a one-line "Writing" row.
 
 ## Build locally
@@ -44,6 +53,6 @@ pnpm pdf        # resume.json → resume.tex → resume.pdf
 
 From another repo, add this one as a dependency (for example
 `"resume-template": "link:../resume-template"`) and run
-`resume-template <resume.json> [output name]`. The package also exports
+`resume-template <resume.json> [output name] [--template cv]`. The package also exports
 `loadResume`, `assertJsonResume`, `createRenderer`, and `buildPdf` for rendering
 your own Nunjucks templates with the same filters.
