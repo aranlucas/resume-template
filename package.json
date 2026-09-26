@@ -1,0 +1,28 @@
+{
+  "name": "resume-template",
+  "version": "1.0.0",
+  "description": "One-page, ATS-readable LaTeX resume rendered from a JSON Resume file",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "resume-template": "bin/resume-template.mjs"
+  },
+  "exports": {
+    ".": "./lib/index.mjs"
+  },
+  "files": [
+    "bin",
+    "lib",
+    "templates"
+  ],
+  "scripts": {
+    "pdf": "node bin/resume-template.mjs resume.json"
+  },
+  "dependencies": {
+    "@jsonresume/schema": "1.3.1",
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
+    "nunjucks": "^3.2.4"
+  },
+  "packageManager": "pnpm@12.4.2"
+}

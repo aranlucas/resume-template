@@ -1,0 +1,26 @@
+# Rebuilds the sample resume.pdf from resume.json with this commit's template.
+
+name: PDF
+
+on:
+  pull_request:
+    paths: [resume.json, templates/**, lib/**, bin/**, package.json, pnpm-lock.yaml, .github/workflows/*.yml]
+  push:
+    branches: [main]
+    paths: [resume.json, templates/**, lib/**, bin/**, package.json, pnpm-lock.yaml, .github/workflows/*.yml]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pdf-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pdf:
+    uses: ./.github/workflows/build-resume.yml
+    permissions:
+      contents: write
+    with:
+      template-ref: ${{ github.event.pull_request.head.sha || github.sha }}
