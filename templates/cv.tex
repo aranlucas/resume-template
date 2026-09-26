@@ -1,0 +1,206 @@
+<# Multi-page CV template (clinical/academic). Same data and syntax as resume.tex;
+   render with `resume-template <resume.json> --template cv`.
+   Sections, in order, each skipped when empty:
+     summary, education, work, work with "section": "research", publications,
+     volunteer, volunteer with "section": "leadership", awards, skills,
+     certificates, languages + interests.
+   Rename a section with meta.titles, e.g. { "work": "Dental Professional Experience" }.
+   Custom fields: location and highlights on any entry, role on certificates,
+   endDate on awards, authors/author/volume on publications. #>
+<% set titles = meta.titles if (meta and meta.titles) else {} %>
+<% macro entry(heading, location, subheading, dates, highlights) %>
+  \item
+        \resumeEntry{<< heading | tex >>}{<< (location or "") | tex >>}{<< (subheading or "") | tex >>}{<< dates | tex >>}
+<% if highlights and highlights | length %>
+        \begin{itemize}
+<% for highlight in highlights %>
+          \item << highlight | tex >>
+<% endfor %>
+        \end{itemize}
+<% endif %>
+<% endmacro %>
+<% macro section(key, fallback) %>
+\section{<< (titles[key] or fallback) | tex >>}
+<% endmacro %>
+% Generated from a JSON Resume file by resume-template
+% (https://github.com/aranlucas/resume-template). Edit the JSON instead.
+\documentclass[letterpaper,12pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[margin=0.5in, top=0.35in]{geometry}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{fontawesome}
+
+\renewcommand{\labelitemi}{$\bullet$}
+% Adjust space between bullet points
+\setlist[itemize]{topsep=2pt, leftmargin=1.5em, labelsep=5pt, noitemsep}
+\setlist[description]{leftmargin=0pt, labelwidth=0pt, labelsep=0pt}
+% Add resume color
+\definecolor{maincolor}{rgb}{0.0, 0.2, 0.4}
+\hypersetup{pdftitle={<< basics.name | tex >> - << basics.label | tex >>}, pdfauthor={<< basics.name | tex >>}}
+
+% Format section styling
+\raggedbottom\raggedright\titleformat{\section}{
+  \bfseries\color{maincolor}\vspace{-4pt}\raggedright\large
+}{}{0em}{}[\color{maincolor}\titlerule\vspace{-5pt}]
+
+% Two-row entry header: name+location, title+dates
+\newcommand{\resumeEntry}[4]{%
+  \begin{tabular*}{\linewidth}{@{}l@{\extracolsep{\fill}}r@{}}
+    \textbf{#1} & #2 \\
+    \textit{\small #3} & \textit{\small #4} \\
+  \end{tabular*}%
+}
+
+% Ensure the generated pdf is machine readable / ATS parsable
+\input{glyphtounicode}
+\pdfgentounicode=1
+
+\pagestyle{empty}
+
+\begin{document}
+
+%----------HEADING-----------------
+\begin{center}
+  \textbf{\Huge \color{maincolor}{<< basics.name | tex >>}} \\ \vspace{1pt}
+  \small
+<% if basics.phone %>
+  \faMobile\space << basics.phone | tex >> \textbar{}
+<% endif %>
+  \href{mailto:<< basics.email >>}{\faEnvelope\space << basics.email | tex >>}
+<% for profile in basics.profiles or [] %>
+  \textbar{} \href{<< profile.url | url >>}{<< profile.url | displayUrl | tex >>}
+<% endfor %>
+<% if basics.url %>
+  \textbar{} \href{<< basics.url | url >>}{<< basics.url | displayUrl | tex >>}
+<% endif %>
+<% if basics.location %>
+  \textbar{} \faMapMarker\space << [basics.location.city, basics.location.region] | select | join(", ") | tex >>
+<% endif %>
+\end{center}
+
+<% if basics.summary %>
+%-----------SUMMARY-----------------
+<< section("summary", "Summary") >>
+<< basics.summary | tex >>
+
+<% endif %>
+<% if education and education | length %>
+%-----------EDUCATION-----------------
+<< section("education", "Education") >>
+\begin{description}
+<% for school in education %>
+<< entry(school.institution, school.location, [school.studyType, school.area, school.score] | select | join(", "), (school | dates) if school.startDate else (school.endDate | date), school.highlights) >>
+<% endfor %>
+\end{description}
+
+<% endif %>
+<% set jobs = work | inSection %>
+<% if jobs | length %>
+%-----------EXPERIENCE-----------------
+<< section("work", "Professional Experience") >>
+\begin{description}
+<% for job in jobs %>
+<< entry(job.name, job.location, job.position, job | dates, job.highlights) >>
+<% endfor %>
+\end{description}
+
+<% endif %>
+<% set research = work | inSection("research") %>
+<% if research | length %>
+%-----------RESEARCH-----------------
+<< section("research", "Research") >>
+\begin{description}
+<% for job in research %>
+<< entry(job.name, job.location, job.position, job | dates, job.highlights) >>
+<% endfor %>
+\end{description}
+
+<% endif %>
+<% if publications and publications | length %>
+%-----------PUBLICATIONS-----------------
+<< section("publications", "Publications") >>
+<% for pub in publications %>
+\noindent\hangindent=1.5em <% if pub.authors %><< pub.authors | join(", ") | tex | bold(pub.author) >> <% endif %>(<< pub.releaseDate | date >>). << pub.name | tex >>. \textit{<< pub.publisher | tex >>}<% if pub.volume %>, << pub.volume | tex >><% endif %>.<% if pub.url %> \href{<< pub.url | url >>}{<< pub.url | displayUrl | tex >>}<% endif %>
+
+\vspace{4pt}
+<% endfor %>
+
+<% endif %>
+<% set service = volunteer | inSection %>
+<% if service | length %>
+%-----------VOLUNTEER-----------------
+<< section("volunteer", "Volunteer Service") >>
+\begin{description}
+<% for role in service %>
+<< entry(role.organization, role.location, role.position, role | dates, role.highlights) >>
+<% endfor %>
+\end{description}
+
+<% endif %>
+<% set leadership = volunteer | inSection("leadership") %>
+<% if leadership | length %>
+%-----------LEADERSHIP-----------------
+<< section("leadership", "Leadership") >>
+\begin{description}
+<% for role in leadership %>
+<< entry(role.organization, role.location, role.position, role | dates, role.highlights) >>
+<% endfor %>
+\end{description}
+
+<% endif %>
+<% if awards and awards | length %>
+%-----------AWARDS-----------------
+<< section("awards", "Honors & Awards") >>
+\begin{description}
+<% for award in awards %>
+  \item \textbf{<< award.title | tex >>} $|$ << award.awarder | tex >> $|$ << award.date | date >><% if award.endDate %>--<< award.endDate | date >><% endif %>
+
+<% endfor %>
+\end{description}
+
+<% endif %>
+<% if skills and skills | length %>
+%-----------SKILLS-----------------
+<< section("skills", "Skills") >>
+\begin{description}
+<% for skill in skills %>
+  \item \textbf{<< skill.name | tex >>:} << skill.keywords | join(", ") | tex >>
+<% endfor %>
+\end{description}
+
+<% endif %>
+<% if certificates and certificates | length %>
+%-----------CERTIFICATES-----------------
+<< section("certificates", "Certifications") >>
+\begin{description}
+<% for cert in certificates %>
+<< entry(cert.name, cert.location, cert.role or cert.issuer, (cert | dates) if cert.startDate else (cert.date | date), cert.highlights) >>
+<% endfor %>
+\end{description}
+
+<% endif %>
+<% if (languages and languages | length) or (interests and interests | length) %>
+%-----------LANGUAGES & INTERESTS-----------------
+<< section("languages", "Languages & Interests") >>
+<% if languages and languages | length %>
+\begin{description}
+  \item \textbf{Languages:} <% for lang in languages %><< lang.language | tex >><% if lang.fluency %> (<< lang.fluency | tex >>)<% endif %><% if not loop.last %>, <% endif %><% endfor %>
+
+\end{description}
+<% endif %>
+<% if interests and interests | length %>
+\begin{itemize}
+<% for interest in interests %>
+  \item << interest.name | tex >><% if interest.keywords %>: << interest.keywords | join(", ") | tex >><% endif %>
+
+<% endfor %>
+\end{itemize}
+<% endif %>
+
+<% endif %>
+\end{document}
