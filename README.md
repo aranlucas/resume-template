@@ -12,6 +12,10 @@ resume or a fuller CV, and publish a fresh artifact when the source changes.
 > `.tex` and `.pdf`, and give a reviewer a polished document that still has a
 > source file behind it.
 
+<p align="center">
+  <img src="docs/images/readme-preview.png" alt="First page of the generic resume template fixture" width="600" />
+</p>
+
 [`resume.json`](resume.json) contains intentionally generic placeholder data;
 [`resume.pdf`](resume.pdf) is the checked-in result of rendering it.
 
