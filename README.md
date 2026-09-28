@@ -1,8 +1,13 @@
 # LaTeX Resume Template
 
-ATS-readable LaTeX resumes rendered from a [JSON Resume](https://jsonresume.org/schema)
-file. [`resume.json`](resume.json) is a placeholder example; [`resume.pdf`](resume.pdf)
-is what it renders to.
+`resume-template` turns a [JSON Resume](https://jsonresume.org/schema) file
+into an ATS-readable LaTeX source file and PDF. It is both a command-line
+package and a reusable GitHub Actions workflow, so a resume repository can
+keep structured content in Git and publish a generated artifact on every
+change.
+
+[`resume.json`](resume.json) contains intentionally generic placeholder data;
+[`resume.pdf`](resume.pdf) is the checked-in result of rendering it.
 
 Two templates in [`templates/`](templates):
 
@@ -56,3 +61,26 @@ From another repo, add this one as a dependency (for example
 `resume-template <resume.json> [output name] [--template cv]`. The package also exports
 `loadResume`, `assertJsonResume`, `createRenderer`, and `buildPdf` for rendering
 your own Nunjucks templates with the same filters.
+
+## Source map and contracts
+
+- `bin/resume-template.mjs` is the CLI entry point.
+- `lib/resume.mjs` loads and validates JSON Resume data.
+- `lib/render.mjs` configures Nunjucks and LaTeX-safe filters.
+- `lib/pdf.mjs` writes `.tex` and invokes `pdflatex`.
+- `templates/resume.tex` is the one-page layout; `templates/cv.tex` is the
+  multi-page CV layout.
+- `resume.tex` and `resume.pdf` are generated artifacts. Edit
+  [`resume.json`](resume.json) or a template, then regenerate them.
+
+Values in the templates must pass through the provided `tex` filter (or `url`
+inside `\\href{}`), and dates should use `YYYY` or `YYYY-MM`. The default
+template is designed to fit one page; content changes should be checked with
+`pdfinfo`, `pdftotext`, and a rendered preview.
+
+## Status
+
+The package is a small, stable renderer rather than a resume editor or hosted
+service. The reusable workflow installs TeX on GitHub-hosted runners, uploads
+the generated files on pull requests, and commits them on pushes when the
+caller grants `contents: write`.
