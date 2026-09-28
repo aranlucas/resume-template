@@ -1,10 +1,16 @@
-# LaTeX Resume Template
+# LaTeX Resume Template · Turn structured facts into a readable PDF
+
+[![Workflow syntax](https://github.com/aranlucas/resume-template/actions/workflows/workflow-syntax.yml/badge.svg)](https://github.com/aranlucas/resume-template/actions/workflows/workflow-syntax.yml)
+[![License](https://img.shields.io/github/license/aranlucas/resume-template)](LICENSE)
 
 `resume-template` turns a [JSON Resume](https://jsonresume.org/schema) file
-into an ATS-readable LaTeX source file and PDF. It is both a command-line
-package and a reusable GitHub Actions workflow, so a resume repository can
-keep structured content in Git and publish a generated artifact on every
-change.
+into an ATS-readable LaTeX source file and PDF. It gives a resume repository a
+repeatable handoff: keep structured facts in Git, choose a focused one-page
+resume or a fuller CV, and publish a fresh artifact when the source changes.
+
+> **The useful loop:** edit `resume.json` once, let GitHub Actions render the
+> `.tex` and `.pdf`, and give a reviewer a polished document that still has a
+> source file behind it.
 
 [`resume.json`](resume.json) contains intentionally generic placeholder data;
 [`resume.pdf`](resume.pdf) is the checked-in result of rendering it.
