@@ -53,8 +53,10 @@ jobs:
       template: cv # default: resume
 ```
 
-Dates must be `YYYY-MM` (or `YYYY`, e.g. for awards). Jobs whose position ends in "Intern" are merged into one
-"Earlier Experience" entry, and `publications` render as a one-line "Writing" row.
+Dates must be `YYYY-MM` (or `YYYY`, e.g. for awards). Completed jobs whose position
+ends in "Intern" and have both dates are merged into one "Earlier Experience" entry. Ongoing internships stay separate with "Present";
+missing dates are omitted and optional highlights may be absent or empty. In the
+resume layout, `publications` render as a one-line "Writing" row.
 
 ## Build locally
 
@@ -69,14 +71,24 @@ pnpm pdf        # resume.json → resume.tex → resume.pdf
 From another repo, add this one as a dependency (for example
 `"resume-template": "link:../resume-template"`) and run
 `resume-template <resume.json> [output name] [--template cv]`. The package also exports
-`loadResume`, `assertJsonResume`, `createRenderer`, and `buildPdf` for rendering
-your own Nunjucks templates with the same filters.
+`loadResume`, `assertJsonResume`, `createRenderer`, `renderResumeDocument`, and
+`buildPdf`. Use `renderResumeDocument(data, { template: "resume", searchPaths: [] })`
+to validate JSON Resume data and supported dates and return TeX without writing files.
+`buildPdf(data, output, options)` uses the same validation and rendering operation.
+Use `createRenderer(searchPaths)` for custom Nunjucks/Markdown templates with the same
+filters; it remains generic and does not impose JSON Resume validation.
+
+PDF builds use a temporary output directory with shell escape disabled and a two-minute
+compiler timeout. A failed build leaves existing `.tex`/`.pdf` outputs unchanged and
+copies the compiler log to `<output>.log` when available. Relative LaTeX inputs are
+still resolved from the output directory. Only the final `.tex`, `.pdf`, and diagnostic
+`.log` are retained.
 
 ## Source map and contracts
 
 - `bin/resume-template.mjs` is the CLI entry point.
 - `lib/resume.mjs` loads and validates JSON Resume data.
-- `lib/render.mjs` configures Nunjucks and LaTeX-safe filters.
+- `lib/render.mjs` validates document input and configures Nunjucks and LaTeX-safe filters.
 - `lib/pdf.mjs` writes `.tex` and invokes `pdflatex`.
 - `templates/resume.tex` is the one-page layout; `templates/cv.tex` is the
   multi-page CV layout.
@@ -87,6 +99,19 @@ Values in the templates must pass through the provided `tex` filter (or `url`
 inside `\\href{}`), and dates should use `YYYY` or `YYYY-MM`. The default
 template is designed to fit one page; content changes should be checked with
 `pdfinfo`, `pdftotext`, and a rendered preview.
+
+## Verification
+
+```bash
+pnpm test       # renderer, custom templates, CLI and controlled compiler regressions
+pnpm test:pdf   # real TeX/PDF and ATS text checks; requires TeX Live and Poppler
+```
+
+The real-PDF checks use synthetic data and the public placeholder sample. The `cv`
+layout additionally requires Latin Modern and the `fontawesome` LaTeX package
+(typically `lmodern` and `texlive-fonts-extra` on Debian/Ubuntu). Check your TeX
+installation before running `test:pdf`. The GitHub PDF workflow runs the fast
+regression suite in addition to rendering the sample.
 
 ## Status
 

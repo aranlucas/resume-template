@@ -58,33 +58,42 @@
   \href{<< basics.url | url >>}{<< basics.url | displayUrl | tex >>}
 \end{center}
 
+<% if basics.summary %>
 %-----------SUMMARY-----------------
 \section{Summary}
 << basics.summary | tex >>
 
+<% endif %>
+<% if work and work | length %>
 %-----------EXPERIENCE-----------------
 \section{Experience}
 \begin{description}
-<% for job in work | reject("internship") %>
+<% for job in work | reject("completedInternship") %>
   \item
         \resumeEntry{<< job.name | tex >>}{<< job.location | tex >>}{<< job.position | tex >>}{<< job | dates | tex >>}
+<% if job.highlights and job.highlights | length %>
         \begin{itemize}
 <% for highlight in job.highlights %>
           \item << highlight | tex >>
 <% endfor %>
         \end{itemize}
+<% endif %>
 <% endfor %>
-<% set internships = work | select("internship") %>
+<% set internships = work | select("completedInternship") %>
 <% if internships | length %>
 <% set earlier = internships | condense %>
   \item
         \resumeEntry{<< earlier.name | tex >>}{<< earlier.location | tex >>}{<< earlier.position | tex >>}{<< earlier.dates | tex >>}
+<% if earlier.highlight %>
         \begin{itemize}
           \item << earlier.highlight | tex >>
         \end{itemize}
 <% endif %>
+<% endif %>
 \end{description}
 
+<% endif %>
+<% if projects and projects | length %>
 %-----------PROJECTS-----------------
 \section{Selected Projects}
 \begin{description}
@@ -93,23 +102,29 @@
         \begin{tabular*}{\linewidth}{@{}l@{\extracolsep{\fill}}r@{}}
           \href{<< project.url | url >>}{\textbf{<< project.name | tex >>}} & \textit{\small << project.type | tex >>} \\
         \end{tabular*}
+<% if project.highlights and project.highlights | length %>
         \begin{itemize}
 <% for highlight in project.highlights %>
           \item << highlight | tex >>
 <% endfor %>
         \end{itemize}
+<% endif %>
 <% endfor %>
 \end{description}
 
+<% endif %>
+<% if education and education | length %>
 %-----------EDUCATION-----------------
 \section{Education}
 \begin{description}
 <% for school in education %>
   \item
-        \resumeEntry{<< school.institution | tex >>}{<< school.location | tex >>}{<< [school.studyType, school.area, school.score] | join(", ") | tex >>}{<< school.endDate | date >>}
+        \resumeEntry{<< school.institution | tex >>}{<< school.location | tex >>}{<< [school.studyType, school.area, school.score] | select | join(", ") | tex >>}{<< school.endDate | date >>}
 <% endfor %>
 \end{description}
 
+<% endif %>
+<% if (skills and skills | length) or (publications and publications | length) %>
 %-----------SKILLS-----------------
 
 \section{Skills}
@@ -122,4 +137,5 @@
 <% endif %>
 \end{description}
 
+<% endif %>
 \end{document}
