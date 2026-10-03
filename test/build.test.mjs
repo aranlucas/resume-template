@@ -11,7 +11,9 @@ import { fixture } from "./fixture.mjs";
 // Keep compiler tests independent of the internship-rendering regressions.
 function buildFixture() {
   const data = fixture();
+
   for (const job of data.work) job.position = "Engineer";
+
   return data;
 }
 
@@ -35,6 +37,7 @@ writeFileSync(join(output, stem + '.log'), 'synthetic compiler log');
 ${mode !== "no-pdf" ? `writeFileSync(join(output, stem + '.pdf'), ${JSON.stringify(mode === "fail" ? "broken partial PDF" : "synthetic complete PDF")});` : ""}
 ${mode === "fail" ? "console.log('synthetic compiler failure'); process.exit(1);" : ""}
 `, { mode: 0o755 });
+
   return { directory, out };
 }
 

@@ -11,6 +11,7 @@ import { fixture } from "./fixture.mjs";
 function directory(t) {
   const path = mkdtempSync(join(tmpdir(), "resume-real-pdf-"));
   t.after(() => rmSync(path, { recursive: true, force: true }));
+
   return path;
 }
 
@@ -18,6 +19,7 @@ function inspect(out) {
   const info = execFileSync("pdfinfo", [`${out}.pdf`], { encoding: "utf8", timeout: 10_000 });
   const text = execFileSync("pdftotext", [`${out}.pdf`, "-"], { encoding: "utf8", timeout: 10_000, stdio: ["ignore", "pipe", "pipe"] });
   assert.doesNotMatch(readFileSync(`${out}.log`, "utf8"), /Overfull|Underfull|Warning|Error/);
+
   return { pages: Number(info.match(/^Pages:\s+(\d+)/m)[1]), text };
 }
 

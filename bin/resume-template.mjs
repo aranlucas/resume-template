@@ -11,7 +11,9 @@ const { values, positionals } = parseArgs({
   allowPositionals: true,
   options: { template: { type: "string", default: "resume" } },
 });
+
 const [input, output = input?.replace(/\.json$/, "")] = positionals;
+
 if (!input) {
   console.error("Usage: resume-template <resume.json> [output name] [--template resume|cv]");
   process.exit(1);
