@@ -4,10 +4,10 @@ name: PDF
 
 on:
   pull_request:
-    paths: [resume.json, templates/**, lib/**, bin/**, test/**, package.json, pnpm-lock.yaml, .github/workflows/*.yml]
+    paths: [resume.json, templates/**, lib/**, bin/**, test/**, package.json, pnpm-lock.yaml, .oxlintrc.json, tools/oxlint/**, .github/workflows/*.yml]
   push:
     branches: [main]
-    paths: [resume.json, templates/**, lib/**, bin/**, test/**, package.json, pnpm-lock.yaml, .github/workflows/*.yml]
+    paths: [resume.json, templates/**, lib/**, bin/**, test/**, package.json, pnpm-lock.yaml, .oxlintrc.json, tools/oxlint/**, .github/workflows/*.yml]
   workflow_dispatch:
 
 permissions:
@@ -28,6 +28,7 @@ jobs:
         with:
           node-version: 24
       - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
       - run: pnpm test
   pdf:
     uses: ./.github/workflows/build-resume.yml

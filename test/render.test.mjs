@@ -86,3 +86,14 @@ test("custom Markdown filters and TeX search path overrides remain available", (
   assert.match(createRenderer([directory])("custom.md", { title: "Custom Markdown", work: [data.work[0]] }), /Custom Markdown\nSep 2026 – Present2026 – Present/);
   assert.equal(renderResumeDocument(data, { searchPaths: [directory] }), "Example Person");
 });
+
+test("nested date validation treats primitives as leaves and visits arrays", async () => {
+  const { assertMonthDates } = await import("../lib/resume.mjs");
+
+  for (const value of [null, undefined, true, 1, "text", Symbol("leaf"), () => {}]) {
+    assert.doesNotThrow(() => assertMonthDates("Resume", value));
+  }
+
+  assert.doesNotThrow(() => assertMonthDates("Resume", { entries: [{ date: "2026-10" }] }));
+  assert.throws(() => assertMonthDates("Resume", { entries: [{ date: "2026-13" }] }), /Resume \/entries\/0\/date/);
+});
