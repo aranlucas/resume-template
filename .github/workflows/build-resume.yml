@@ -44,12 +44,10 @@ jobs:
           ref: ${{ inputs.template-ref }}
           path: .resume-template
           persist-credentials: false
-      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: pnpm/setup@fbda4c85fc2e1e08721cd8763afea8f48d60f024 # v3.0.0
         with:
-          package_json_file: .resume-template/package.json
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
-        with:
-          node-version: 24
+          working-directory: .resume-template
+          install: false
       - name: Install TeX Live
         run: |
           sudo apt-get update -q
