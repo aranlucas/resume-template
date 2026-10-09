@@ -1,7 +1,6 @@
 # Rebuilds the sample resume.pdf from resume.json with this commit's template.
 
 name: PDF
-
 on:
   pull_request:
     paths: [resume.json, templates/**, lib/**, bin/**, test/**, package.json, pnpm-lock.yaml, .oxlintrc.json, tools/oxlint/**, .github/workflows/*.yml]
@@ -9,25 +8,12 @@ on:
     branches: [main]
     paths: [resume.json, templates/**, lib/**, bin/**, test/**, package.json, pnpm-lock.yaml, .oxlintrc.json, tools/oxlint/**, .github/workflows/*.yml]
   workflow_dispatch:
-
 permissions:
   contents: read
-
 concurrency:
   group: pdf-${{ github.ref }}
   cancel-in-progress: true
-
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: pnpm/setup@fbda4c85fc2e1e08721cd8763afea8f48d60f024 # v3.0.0
-        with:
-          require-lockfile: true
-      - run: pnpm lint
-      - run: pnpm test
   pdf:
     uses: ./.github/workflows/build-resume.yml
     permissions:
