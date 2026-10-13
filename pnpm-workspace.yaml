@@ -1,0 +1,3 @@
+minimumReleaseAgeExclude:
+  - '@aranlucas/*'
+  - '@oxlint/plugins@1.88.0'
