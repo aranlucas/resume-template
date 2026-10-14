@@ -4,8 +4,8 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { onTestFinished, test } from "vitest";
 
-import { createRenderer, loadResume, renderResumeDocument } from "../lib/index.mjs";
-import { fixture } from "./fixture.mjs";
+import { createRenderer, loadResume, renderResumeDocument } from "@lib/index.mjs";
+import { fixture } from "@test/fixture.mjs";
 
 const samplePath = new URL("../resume.json", import.meta.url);
 
@@ -113,7 +113,7 @@ test("custom Markdown filters and TeX search path overrides remain available", (
 });
 
 test("nested date validation treats primitives as leaves and visits arrays", async () => {
-  const { assertMonthDates } = await import("../lib/resume.mjs");
+  const { assertMonthDates } = await import("@lib/resume.mjs");
 
   for (const value of [null, undefined, true, 1, "text", Symbol("leaf"), () => {}]) {
     assert.doesNotThrow(() => assertMonthDates("Resume", value));

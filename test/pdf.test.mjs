@@ -5,8 +5,8 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { onTestFinished, test } from "vitest";
 
-import { buildPdf, loadResume } from "../lib/index.mjs";
-import { fixture } from "./fixture.mjs";
+import { buildPdf, loadResume } from "@lib/index.mjs";
+import { fixture } from "@test/fixture.mjs";
 
 function directory() {
   const path = mkdtempSync(join(tmpdir(), "resume-real-pdf-"));
