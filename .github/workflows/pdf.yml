@@ -39,6 +39,6 @@ jobs:
   pdf:
     uses: ./.github/workflows/build-resume.yml
     permissions:
-      contents: write
+      contents: read
     with:
       template-ref: ${{ github.event.pull_request.head.sha || github.sha }}
