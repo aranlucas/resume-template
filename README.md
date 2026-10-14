@@ -30,8 +30,9 @@ Two templates in [`templates/`](templates):
 ## Use it from your own repo
 
 Commit your `resume.json` and add a workflow that calls this repo's reusable
-workflow. It builds the PDF on GitHub Actions (no local TeX needed) and commits
-`<output>.tex`/`<output>.pdf` back on push; pull requests get them as an artifact.
+workflow. It builds the PDF on GitHub Actions (no local TeX needed) and uploads
+`<output>.tex`/`<output>.pdf` as the `resume` artifact on every run. Download them
+from the workflow run and include any checked-in updates in a pull request.
 
 ```yaml
 # .github/workflows/pdf.yml
@@ -47,7 +48,7 @@ jobs:
   pdf:
     uses: aranlucas/resume-template/.github/workflows/build-resume.yml@main
     permissions:
-      contents: write
+      contents: read
     with:
       output: Jane_Doe_Resume # default: resume
       template: cv # default: resume
@@ -116,6 +117,6 @@ regression suite in addition to rendering the sample.
 ## Status
 
 The package is a small, stable renderer rather than a resume editor or hosted
-service. The reusable workflow installs TeX on GitHub-hosted runners, uploads
-the generated files on pull requests, and commits them on pushes when the
-caller grants `contents: write`.
+service. The reusable workflow installs TeX on GitHub-hosted runners and uploads
+the generated files as an artifact. It only requires `contents: read` and leaves
+protected branches unchanged.
