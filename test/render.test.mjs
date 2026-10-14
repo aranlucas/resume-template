@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import test from "node:test";
+import { onTestFinished, test } from "vitest";
 
 import { createRenderer, loadResume, renderResumeDocument } from "../lib/index.mjs";
 import { fixture } from "./fixture.mjs";
@@ -14,7 +14,10 @@ for (const template of ["resume", "cv"]) {
     const data = fixture();
     const original = structuredClone(data);
     const tex = renderResumeDocument(data, { template });
-    assert.match(tex, /\\resumeEntry\{Current Company\}\{\}\{Engineering Intern\}\{Sep 2026 -- Present\}/);
+    assert.match(
+      tex,
+      /\\resumeEntry\{Current Company\}\{\}\{Engineering Intern\}\{Sep 2026 -- Present\}/,
+    );
     assert.doesNotMatch(tex, /\\begin\{itemize\}/);
     assert.doesNotMatch(tex, /undefined|NaN/);
     assert.deepEqual(data, original);
@@ -47,14 +50,24 @@ for (const template of ["resume", "cv"]) {
     const data = fixture();
     data.basics.summary = String.raw`path\name {value} & 10% $ # _ ~ ^ — – “quoted”`;
     const tex = renderResumeDocument(data, { template });
-    assert.ok(tex.includes(String.raw`path\textbackslash{}name \{value\} \& 10\% \$ \# \_ \textasciitilde{} \textasciicircum{} --- -- “quoted”`));
+    assert.ok(
+      tex.includes(
+        String.raw`path\textbackslash{}name \{value\} \& 10\% \$ \# \_ \textasciitilde{} \textasciicircum{} --- -- “quoted”`,
+      ),
+    );
     assert.ok(!tex.includes(String.raw`\textbackslash\{\}`));
   });
 }
 
 test("completed internships merge without assuming nonempty highlights", () => {
   const data = fixture();
-  data.work.push({ name: "Older Company", position: "Engineering Intern", startDate: "2021", endDate: "2022", highlights: ["", " ", "Built tools.", "", "Reviewed changes."] });
+  data.work.push({
+    name: "Older Company",
+    position: "Engineering Intern",
+    startDate: "2021",
+    endDate: "2022",
+    highlights: ["", " ", "Built tools.", "", "Reviewed changes."],
+  });
   const tex = renderResumeDocument(data);
   assert.match(tex, /\\resumeEntry\{Earlier Experience\}/);
   assert.match(tex, /\{2021 -- 2025\}/);
@@ -63,7 +76,10 @@ test("completed internships merge without assuming nonempty highlights", () => {
 });
 
 test("supported input keeps the checked-in sample TeX byte-for-byte unchanged", () => {
-  assert.equal(renderResumeDocument(loadResume(samplePath)), readFileSync(new URL("../resume.tex", import.meta.url), "utf8"));
+  assert.equal(
+    renderResumeDocument(loadResume(samplePath)),
+    readFileSync(new URL("../resume.tex", import.meta.url), "utf8"),
+  );
 });
 
 test("invalid schema and unsupported dates fail with field paths before rendering", () => {
@@ -72,18 +88,27 @@ test("invalid schema and unsupported dates fail with field paths before renderin
   assert.throws(() => renderResumeDocument(data), /\/work\/0\/highlights\/0.*must be string/);
   delete data.work[0].highlights;
   data.work[0].startDate = "2026-09-01";
-  assert.throws(() => renderResumeDocument(data), /\/work\/0\/startDate must be "YYYY-MM" or "YYYY"/);
+  assert.throws(
+    () => renderResumeDocument(data),
+    /\/work\/0\/startDate must be "YYYY-MM" or "YYYY"/,
+  );
   data.work[0].startDate = "2026-13";
   assert.throws(() => renderResumeDocument(data), /\/work\/0\/startDate/);
 });
 
-test("custom Markdown filters and TeX search path overrides remain available", (t) => {
+test("custom Markdown filters and TeX search path overrides remain available", () => {
   const directory = mkdtempSync(join(tmpdir(), "resume-render-test-"));
-  t.after(() => rmSync(directory, { recursive: true, force: true }));
-  writeFileSync(join(directory, "custom.md"), '<< title >>\n<% for job in work | select("internship") %><< job | dates >><% endfor %>\n<% set earlier = work | condense %><< earlier.dates >>');
-  writeFileSync(join(directory, "resume.tex"), '<< basics.name | tex >>');
+  onTestFinished(() => rmSync(directory, { recursive: true, force: true }));
+  writeFileSync(
+    join(directory, "custom.md"),
+    '<< title >>\n<% for job in work | select("internship") %><< job | dates >><% endfor %>\n<% set earlier = work | condense %><< earlier.dates >>',
+  );
+  writeFileSync(join(directory, "resume.tex"), "<< basics.name | tex >>");
   const data = fixture();
-  assert.match(createRenderer([directory])("custom.md", { title: "Custom Markdown", work: [data.work[0]] }), /Custom Markdown\nSep 2026 – Present2026 – Present/);
+  assert.match(
+    createRenderer([directory])("custom.md", { title: "Custom Markdown", work: [data.work[0]] }),
+    /Custom Markdown\nSep 2026 – Present2026 – Present/,
+  );
   assert.equal(renderResumeDocument(data, { searchPaths: [directory] }), "Example Person");
 });
 
@@ -95,5 +120,8 @@ test("nested date validation treats primitives as leaves and visits arrays", asy
   }
 
   assert.doesNotThrow(() => assertMonthDates("Resume", { entries: [{ date: "2026-10" }] }));
-  assert.throws(() => assertMonthDates("Resume", { entries: [{ date: "2026-13" }] }), /Resume \/entries\/0\/date/);
+  assert.throws(
+    () => assertMonthDates("Resume", { entries: [{ date: "2026-13" }] }),
+    /Resume \/entries\/0\/date/,
+  );
 });

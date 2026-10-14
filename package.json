@@ -17,8 +17,8 @@
   },
   "scripts": {
     "pdf": "node bin/resume-template.mjs resume.json",
-    "test": "node --test --test-concurrency=1 test/render.test.mjs test/build.test.mjs",
-    "test:pdf": "node --test --test-concurrency=1 test/pdf.test.mjs",
+    "test": "vitest run test/render.test.mjs test/build.test.mjs",
+    "test:pdf": "vitest run test/pdf.test.mjs",
     "lint": "oxlint . --deny-warnings",
     "lint:fix": "oxlint . --fix --deny-warnings",
     "format": "oxfmt --write",
@@ -35,7 +35,8 @@
     "@aranlucas/oxlint-plugin-anti-slop": "0.1.0",
     "oxfmt": "^0.73.0",
     "oxlint": "^1.88.0",
-    "oxlint-tsgolint": "^7.0.2004"
+    "oxlint-tsgolint": "^7.0.2004",
+    "vitest": "5.0.3"
   },
   "packageManager": "pnpm@12.6.0"
 }

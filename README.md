@@ -103,7 +103,7 @@ template is designed to fit one page; content changes should be checked with
 ## Verification
 
 ```bash
-pnpm test       # renderer, custom templates, CLI and controlled compiler regressions
+pnpm test       # Vitest renderer, custom templates, CLI and controlled compiler regressions
 pnpm test:pdf   # real TeX/PDF and ATS text checks; requires TeX Live and Poppler
 ```
 
