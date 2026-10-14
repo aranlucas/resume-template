@@ -111,11 +111,30 @@
     },
     {
       "name": "Technologies",
-      "keywords": ["React", "Next.js", "Expo", "AWS", "CDK", "DynamoDB", "Java Spring", "Ruby on Rails", "FastAPI", "Docker", "Kubernetes"]
+      "keywords": [
+        "React",
+        "Next.js",
+        "Expo",
+        "AWS",
+        "CDK",
+        "DynamoDB",
+        "Java Spring",
+        "Ruby on Rails",
+        "FastAPI",
+        "Docker",
+        "Kubernetes"
+      ]
     },
     {
       "name": "AI/Agents",
-      "keywords": ["MCP", "Vercel AI SDK", "Google ADK", "Cloudflare Agents SDK", "AG-UI", "CopilotKit"]
+      "keywords": [
+        "MCP",
+        "Vercel AI SDK",
+        "Google ADK",
+        "Cloudflare Agents SDK",
+        "AG-UI",
+        "CopilotKit"
+      ]
     }
   ]
 }

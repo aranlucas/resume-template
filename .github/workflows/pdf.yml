@@ -3,10 +3,34 @@
 name: PDF
 on:
   pull_request:
-    paths: [resume.json, templates/**, lib/**, bin/**, test/**, package.json, pnpm-lock.yaml, .oxlintrc.json, tools/oxlint/**, .github/workflows/*.yml]
+    paths:
+      [
+        resume.json,
+        templates/**,
+        lib/**,
+        bin/**,
+        test/**,
+        package.json,
+        pnpm-lock.yaml,
+        .oxlintrc.json,
+        tools/oxlint/**,
+        .github/workflows/*.yml,
+      ]
   push:
     branches: [main]
-    paths: [resume.json, templates/**, lib/**, bin/**, test/**, package.json, pnpm-lock.yaml, .oxlintrc.json, tools/oxlint/**, .github/workflows/*.yml]
+    paths:
+      [
+        resume.json,
+        templates/**,
+        lib/**,
+        bin/**,
+        test/**,
+        package.json,
+        pnpm-lock.yaml,
+        .oxlintrc.json,
+        tools/oxlint/**,
+        .github/workflows/*.yml,
+      ]
   workflow_dispatch:
 permissions:
   contents: read
