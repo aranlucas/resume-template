@@ -13,8 +13,8 @@ import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { onTestFinished, test } from "vitest";
 
-import { buildPdf } from "../lib/index.mjs";
-import { fixture } from "./fixture.mjs";
+import { buildPdf } from "@lib/index.mjs";
+import { fixture } from "@test/fixture.mjs";
 
 // Keep compiler tests independent of the internship-rendering regressions.
 function buildFixture() {
