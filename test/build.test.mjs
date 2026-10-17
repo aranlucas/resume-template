@@ -6,7 +6,9 @@ import {
   mkdtempSync,
   readFileSync,
   readdirSync,
+  realpathSync,
   rmSync,
+  symlinkSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
@@ -83,8 +85,27 @@ test("successful PDF builds publish both files without shell escape or changing 
   assert.equal(readFileSync(`${out}.pdf`, "utf8"), "synthetic complete PDF");
   const invocation = JSON.parse(readFileSync(join(directory, "invocation.json"), "utf8"));
   assert.ok(invocation.args.includes("-no-shell-escape"));
-  assert.equal(invocation.cwd, directory);
+  assert.equal(realpathSync(invocation.cwd), realpathSync(directory));
   assert.ok(!readdirSync(directory).some((name) => name.startsWith(".resume-template-")));
+});
+
+test("PDF builds retain relative input access through a symlinked destination", () => {
+  const { directory } = harness();
+  const destination = join(directory, "destination");
+  const alias = join(directory, "destination alias");
+  mkdirSync(destination);
+  symlinkSync(destination, alias, "dir");
+  writeFileSync(join(destination, "relative-input.tex"), "destination-relative input");
+  buildPdf(buildFixture(), join(alias, "document"));
+
+  const invocation = JSON.parse(readFileSync(join(directory, "invocation.json"), "utf8"));
+  assert.equal(realpathSync(invocation.cwd), realpathSync(destination));
+  assert.equal(
+    readFileSync(join(invocation.cwd, "relative-input.tex"), "utf8"),
+    "destination-relative input",
+  );
+  assert.equal(readFileSync(join(destination, "document.pdf"), "utf8"), "synthetic complete PDF");
+  assert.ok(!readdirSync(destination).some((name) => name.startsWith(".resume-template-")));
 });
 
 test("buildPdf validates before filesystem writes or TeX execution", () => {
