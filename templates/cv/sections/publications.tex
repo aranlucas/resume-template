@@ -1,0 +1,10 @@
+<% if publications and publications | length %>
+%-----------PUBLICATIONS-----------------
+<< section("publications", "Publications") >>
+<% for pub in publications %>
+\noindent\hangindent=1.5em <% if pub.authors %><< pub.authors | join(", ") | tex | bold(pub.author) >> <% endif %>(<< pub.releaseDate | date | tex >>). << pub.name | tex >>. \textit{<< pub.publisher | tex >>}<% if pub.volume %>, << pub.volume | tex >><% endif %>.<% if pub.url %> \href{<< pub.url | url >>}{<< pub.url | displayUrl | tex >>}<% endif %>
+
+\vspace{4pt}
+<% endfor %>
+
+<% endif %>

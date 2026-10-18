@@ -1,0 +1,10 @@
+<% if certificates and certificates | length %>
+%-----------CERTIFICATES-----------------
+<< section("certificates", "Certifications") >>
+\begin{description}
+<% for cert in certificates %>
+<< entry(cert.name, cert.location, cert.role or cert.issuer, (cert | dates) if cert.startDate else (cert.date | date), cert.highlights) >>
+<% endfor %>
+\end{description}
+
+<% endif %>

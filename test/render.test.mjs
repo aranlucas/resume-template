@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { onTestFinished, test } from "vitest";
@@ -10,6 +10,26 @@ import { fixture } from "@test/fixture.mjs";
 const samplePath = new URL("../resume.json", import.meta.url);
 
 for (const template of ["resume", "cv"]) {
+  test(`${template}: a section override inherits data while other sections use package defaults`, () => {
+    const directory = mkdtempSync(join(tmpdir(), "resume-partial-test-"));
+    onTestFinished(() => rmSync(directory, { recursive: true, force: true }));
+    const sections = join(directory, template, "sections");
+    mkdirSync(sections, { recursive: true });
+    writeFileSync(
+      join(sections, "summary.tex"),
+      "<% if basics.summary %>\\section{Profile}\n<< basics.summary | tex >>\n<% endif %>",
+    );
+    const data = fixture();
+    data.basics.summary = "Research & development";
+    const original = structuredClone(data);
+    const tex = renderResumeDocument(data, { template, searchPaths: [directory] });
+    assert.match(tex, /\\section\{Profile\}\nResearch \\& development/);
+    assert.doesNotMatch(tex, /\\section\{Summary\}/);
+    assert.match(tex, /\\resumeEntry\{Current Company\}/);
+    assert.match(tex, /\\section\{Education\}/);
+    assert.deepEqual(data, original);
+  });
+
   test(`${template}: ongoing internships remain visible with Present and optional highlights`, () => {
     const data = fixture();
     const original = structuredClone(data);
@@ -58,6 +78,24 @@ for (const template of ["resume", "cv"]) {
     assert.ok(!tex.includes(String.raw`\textbackslash\{\}`));
   });
 }
+
+test("CV partial overrides can reuse the entry and section macros from the parent layout", () => {
+  const directory = mkdtempSync(join(tmpdir(), "cv-partial-test-"));
+  onTestFinished(() => rmSync(directory, { recursive: true, force: true }));
+  const sections = join(directory, "cv", "sections");
+  mkdirSync(sections, { recursive: true });
+  writeFileSync(
+    join(sections, "education.tex"),
+    '<< section("education", "Education") >>\n\\begin{description}\n<% for school in education %><< entry(school.institution, school.location, school.area, school.endDate | date, school.highlights) >><% endfor %>\n\\end{description}\n',
+  );
+  const data = fixture();
+  data.meta = { titles: { education: "Training & Education" } };
+  data.education[0].highlights = ["Research & teaching"];
+  const tex = renderResumeDocument(data, { template: "cv", searchPaths: [directory] });
+  assert.match(tex, /\\section\{Training \\& Education\}/);
+  assert.match(tex, /\\resumeEntry\{Example University\}/);
+  assert.match(tex, /\\item Research \\& teaching/);
+});
 
 test("completed internships merge without assuming nonempty highlights", () => {
   const data = fixture();

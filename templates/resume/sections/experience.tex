@@ -1,0 +1,29 @@
+<% if work and work | length %>
+%-----------EXPERIENCE-----------------
+\section{Experience}
+\begin{description}
+<% for job in work | reject("completedInternship") %>
+  \item
+        \resumeEntry{<< job.name | tex >>}{<< job.location | tex >>}{<< job.position | tex >>}{<< job | dates | tex >>}
+<% if job.highlights and job.highlights | length %>
+        \begin{itemize}
+<% for highlight in job.highlights %>
+          \item << highlight | tex >>
+<% endfor %>
+        \end{itemize}
+<% endif %>
+<% endfor %>
+<% set internships = work | select("completedInternship") %>
+<% if internships | length %>
+<% set earlier = internships | condense %>
+  \item
+        \resumeEntry{<< earlier.name | tex >>}{<< earlier.location | tex >>}{<< earlier.position | tex >>}{<< earlier.dates | tex >>}
+<% if earlier.highlight %>
+        \begin{itemize}
+          \item << earlier.highlight | tex >>
+        \end{itemize}
+<% endif %>
+<% endif %>
+\end{description}
+
+<% endif %>

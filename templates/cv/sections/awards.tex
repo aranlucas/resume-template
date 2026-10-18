@@ -1,0 +1,11 @@
+<% if awards and awards | length %>
+%-----------AWARDS-----------------
+<< section("awards", "Honors & Awards") >>
+\begin{description}
+<% for award in awards %>
+  \item \textbf{<< award.title | tex >>} $|$ << award.awarder | tex >> $|$ << award.date | date | tex >><% if award.endDate %>--<< award.endDate | date | tex >><% endif %>
+
+<% endfor %>
+\end{description}
+
+<% endif %>

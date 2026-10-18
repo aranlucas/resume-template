@@ -1,0 +1,10 @@
+<% if skills and skills | length %>
+%-----------SKILLS-----------------
+<< section("skills", "Skills") >>
+\begin{description}
+<% for skill in skills %>
+  \item \textbf{<< skill.name | tex >>:} << skill.keywords | join(", ") | tex >>
+<% endfor %>
+\end{description}
+
+<% endif %>

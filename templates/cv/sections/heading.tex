@@ -1,0 +1,19 @@
+%----------HEADING-----------------
+\begin{center}
+  \textbf{\Huge \color{maincolor}{<< basics.name | tex >>}} \\ \vspace{1pt}
+  \small
+<% if basics.phone %>
+  \faMobile\space << basics.phone | tex >> \textbar{}
+<% endif %>
+  \href{mailto:<< basics.email | url >>}{\faEnvelope\space << basics.email | tex >>}
+<% for profile in basics.profiles or [] %>
+  \textbar{} \href{<< profile.url | url >>}{<< profile.url | displayUrl | tex >>}
+<% endfor %>
+<% if basics.url %>
+  \textbar{} \href{<< basics.url | url >>}{<< basics.url | displayUrl | tex >>}
+<% endif %>
+<% if basics.location %>
+  \textbar{} \faMapMarker\space << [basics.location.city, basics.location.region] | select | join(", ") | tex >>
+<% endif %>
+\end{center}
+

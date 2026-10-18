@@ -1,0 +1,11 @@
+<% set jobs = work | inSection %>
+<% if jobs | length %>
+%-----------EXPERIENCE-----------------
+<< section("work", "Professional Experience") >>
+\begin{description}
+<% for job in jobs %>
+<< entry(job.name, job.location, job.position, job | dates, job.highlights) >>
+<% endfor %>
+\end{description}
+
+<% endif %>

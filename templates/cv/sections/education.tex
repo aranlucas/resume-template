@@ -1,0 +1,10 @@
+<% if education and education | length %>
+%-----------EDUCATION-----------------
+<< section("education", "Education") >>
+\begin{description}
+<% for school in education %>
+<< entry(school.institution, school.location, [school.studyType, school.area, school.score] | select | join(", "), (school | dates) if school.startDate else (school.endDate | date), school.highlights) >>
+<% endfor %>
+\end{description}
+
+<% endif %>

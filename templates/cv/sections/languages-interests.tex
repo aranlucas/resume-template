@@ -1,0 +1,19 @@
+<% if (languages and languages | length) or (interests and interests | length) %>
+%-----------LANGUAGES & INTERESTS-----------------
+<< section("languages", "Languages & Interests") >>
+<% if languages and languages | length %>
+\begin{description}
+  \item \textbf{Languages:} <% for lang in languages %><< lang.language | tex >><% if lang.fluency %> (<< lang.fluency | tex >>)<% endif %><% if not loop.last %>, <% endif %><% endfor %>
+
+\end{description}
+<% endif %>
+<% if interests and interests | length %>
+\begin{itemize}
+<% for interest in interests %>
+  \item << interest.name | tex >><% if interest.keywords %>: << interest.keywords | join(", ") | tex >><% endif %>
+
+<% endfor %>
+\end{itemize}
+<% endif %>
+
+<% endif %>

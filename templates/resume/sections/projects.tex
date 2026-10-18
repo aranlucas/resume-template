@@ -1,0 +1,20 @@
+<% if projects and projects | length %>
+%-----------PROJECTS-----------------
+\section{Selected Projects}
+\begin{description}
+<% for project in projects %>
+  \item
+        \begin{tabular*}{\linewidth}{@{}l@{\extracolsep{\fill}}r@{}}
+          \href{<< project.url | url >>}{\textbf{<< project.name | tex >>}} & \textit{\small << project.type | tex >>} \\
+        \end{tabular*}
+<% if project.highlights and project.highlights | length %>
+        \begin{itemize}
+<% for highlight in project.highlights %>
+          \item << highlight | tex >>
+<% endfor %>
+        \end{itemize}
+<% endif %>
+<% endfor %>
+\end{description}
+
+<% endif %>
