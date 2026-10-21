@@ -9,6 +9,9 @@ workflow and the `resume-template` CLI, so layout changes reach them too.
 ## Main Files
 
 - `templates/resume.tex`, `templates/cv.tex` — the LaTeX layouts.
+- `templates/resume/sections/`, `templates/cv/sections/` — section partials included
+  by each layout. Keep empty-section checks in the partials; consumers can override
+  individual partials through `searchPaths` without copying a full layout.
 - `lib/` — loading, schema validation, template filters, pdflatex; `bin/` — the CLI.
 - `resume.json` — placeholder example content.
 - `resume.tex` / `resume.pdf` — generated from `resume.json`, checked in so the rendered

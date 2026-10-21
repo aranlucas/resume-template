@@ -79,6 +79,53 @@ to validate JSON Resume data and supported dates and return TeX without writing 
 Use `createRenderer(searchPaths)` for custom Nunjucks/Markdown templates with the same
 filters; it remains generic and does not impose JSON Resume validation.
 
+### Customize one section
+
+Each layout includes section partials from `templates/resume/sections/` or
+`templates/cv/sections/`. The main `.tex` file owns the preamble, layout macros,
+and section order. Each partial owns its heading, entries, and empty-section
+check. For example, the resume's `experience.tex` also owns internship grouping.
+
+To customize a section, copy its partial into a directory with the same relative
+path, then pass that directory as a search path. For example, put a replacement
+summary in `my-templates/resume/sections/summary.tex`:
+
+```tex
+<% if basics.summary %>
+\section{Profile}
+<< basics.summary | tex >>
+<% endif %>
+```
+
+Render the built-in layout with that override:
+
+```js
+import { resolve } from "node:path";
+import { buildPdf, loadResume } from "resume-template";
+
+buildPdf(loadResume("resume.json"), "resume", {
+  template: "resume",
+  searchPaths: [resolve("my-templates")],
+});
+```
+
+Search paths are checked in order before the bundled templates, so sections you
+do not override use their defaults. The same option works with
+`renderResumeDocument`. The CLI uses the bundled templates.
+
+Partials inherit the document's data and Nunjucks context. CV partials can also
+call `section(key, fallback)` (honors `meta.titles`) and
+`entry(heading, location, subheading, dates, highlights)` (escapes its arguments
+and omits empty bullet lists). Escape values you render directly with `tex`, or
+`url` inside a link target. Use `include` for partials so these macros retain the
+parent context.
+
+For a complete layout variant, copy `templates/resume.tex` or `templates/cv.tex`
+into your search directory, keep the includes you need, and reorder or remove
+them there. You can bundle that layout and its overrides in one directory. A
+missing partial fails rendering so a misspelled section path cannot silently
+drop content.
+
 PDF builds use a temporary output directory with shell escape disabled and a two-minute
 compiler timeout. A failed build leaves existing `.tex`/`.pdf` outputs unchanged and
 copies the compiler log to `<output>.log` when available. Relative LaTeX inputs are
@@ -93,6 +140,8 @@ still resolved from the output directory. Only the final `.tex`, `.pdf`, and dia
 - `lib/pdf.mjs` writes `.tex` and invokes `pdflatex`.
 - `templates/resume.tex` is the one-page layout; `templates/cv.tex` is the
   multi-page CV layout.
+- `templates/resume/sections/` and `templates/cv/sections/` hold independently
+  replaceable headings and content sections.
 - `resume.tex` and `resume.pdf` are generated artifacts. Edit
   [`resume.json`](resume.json) or a template, then regenerate them.
 

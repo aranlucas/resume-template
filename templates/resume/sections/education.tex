@@ -1,0 +1,11 @@
+<% if education and education | length %>
+%-----------EDUCATION-----------------
+\section{Education}
+\begin{description}
+<% for school in education %>
+  \item
+        \resumeEntry{<< school.institution | tex >>}{<< school.location | tex >>}{<< [school.studyType, school.area, school.score] | select | join(", ") | tex >>}{<< school.endDate | date | tex >>}
+<% endfor %>
+\end{description}
+
+<% endif %>

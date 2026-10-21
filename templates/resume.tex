@@ -47,95 +47,10 @@
 
 \begin{document}
 
-%----------HEADING-----------------
-\begin{center}
-  \textbf{\huge \color{maincolor}{<< basics.name | tex >>}} \\ \vspace{2pt}
-  \small << basics.phone | tex >> $|$
-  \href{mailto:<< basics.email >>}{<< basics.email | tex >>} $|$
-<% for profile in basics.profiles %>
-  \href{<< profile.url | url >>}{<< profile.url | displayUrl | tex >>} $|$
-<% endfor %>
-  \href{<< basics.url | url >>}{<< basics.url | displayUrl | tex >>}
-\end{center}
-
-<% if basics.summary %>
-%-----------SUMMARY-----------------
-\section{Summary}
-<< basics.summary | tex >>
-
-<% endif %>
-<% if work and work | length %>
-%-----------EXPERIENCE-----------------
-\section{Experience}
-\begin{description}
-<% for job in work | reject("completedInternship") %>
-  \item
-        \resumeEntry{<< job.name | tex >>}{<< job.location | tex >>}{<< job.position | tex >>}{<< job | dates | tex >>}
-<% if job.highlights and job.highlights | length %>
-        \begin{itemize}
-<% for highlight in job.highlights %>
-          \item << highlight | tex >>
-<% endfor %>
-        \end{itemize}
-<% endif %>
-<% endfor %>
-<% set internships = work | select("completedInternship") %>
-<% if internships | length %>
-<% set earlier = internships | condense %>
-  \item
-        \resumeEntry{<< earlier.name | tex >>}{<< earlier.location | tex >>}{<< earlier.position | tex >>}{<< earlier.dates | tex >>}
-<% if earlier.highlight %>
-        \begin{itemize}
-          \item << earlier.highlight | tex >>
-        \end{itemize}
-<% endif %>
-<% endif %>
-\end{description}
-
-<% endif %>
-<% if projects and projects | length %>
-%-----------PROJECTS-----------------
-\section{Selected Projects}
-\begin{description}
-<% for project in projects %>
-  \item
-        \begin{tabular*}{\linewidth}{@{}l@{\extracolsep{\fill}}r@{}}
-          \href{<< project.url | url >>}{\textbf{<< project.name | tex >>}} & \textit{\small << project.type | tex >>} \\
-        \end{tabular*}
-<% if project.highlights and project.highlights | length %>
-        \begin{itemize}
-<% for highlight in project.highlights %>
-          \item << highlight | tex >>
-<% endfor %>
-        \end{itemize}
-<% endif %>
-<% endfor %>
-\end{description}
-
-<% endif %>
-<% if education and education | length %>
-%-----------EDUCATION-----------------
-\section{Education}
-\begin{description}
-<% for school in education %>
-  \item
-        \resumeEntry{<< school.institution | tex >>}{<< school.location | tex >>}{<< [school.studyType, school.area, school.score] | select | join(", ") | tex >>}{<< school.endDate | date >>}
-<% endfor %>
-\end{description}
-
-<% endif %>
-<% if (skills and skills | length) or (publications and publications | length) %>
-%-----------SKILLS-----------------
-
-\section{Skills}
-\begin{description}
-<% for skill in skills %>
-  \item \textbf{<< skill.name | tex >>:} << skill.keywords | join(", ") | tex >>
-<% endfor %>
-<% if publications | length %>
-  \item \textbf{Writing:} <% for post in publications %>\href{<< post.url | url >>}{<< post.name | tex >>}<% if not loop.last %>; <% endif %><% endfor %>
-<% endif %>
-\end{description}
-
-<% endif %>
+<% include "resume/sections/heading.tex" %>
+<% include "resume/sections/summary.tex" %>
+<% include "resume/sections/experience.tex" %>
+<% include "resume/sections/projects.tex" %>
+<% include "resume/sections/education.tex" %>
+<% include "resume/sections/skills.tex" %>
 \end{document}

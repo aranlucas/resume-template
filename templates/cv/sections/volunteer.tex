@@ -1,0 +1,11 @@
+<% set service = volunteer | inSection %>
+<% if service | length %>
+%-----------VOLUNTEER-----------------
+<< section("volunteer", "Volunteer Service") >>
+\begin{description}
+<% for role in service %>
+<< entry(role.organization, role.location, role.position, role | dates, role.highlights) >>
+<% endfor %>
+\end{description}
+
+<% endif %>

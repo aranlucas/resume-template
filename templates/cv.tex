@@ -65,143 +65,16 @@
 
 \begin{document}
 
-%----------HEADING-----------------
-\begin{center}
-  \textbf{\Huge \color{maincolor}{<< basics.name | tex >>}} \\ \vspace{1pt}
-  \small
-<% if basics.phone %>
-  \faMobile\space << basics.phone | tex >> \textbar{}
-<% endif %>
-  \href{mailto:<< basics.email >>}{\faEnvelope\space << basics.email | tex >>}
-<% for profile in basics.profiles or [] %>
-  \textbar{} \href{<< profile.url | url >>}{<< profile.url | displayUrl | tex >>}
-<% endfor %>
-<% if basics.url %>
-  \textbar{} \href{<< basics.url | url >>}{<< basics.url | displayUrl | tex >>}
-<% endif %>
-<% if basics.location %>
-  \textbar{} \faMapMarker\space << [basics.location.city, basics.location.region] | select | join(", ") | tex >>
-<% endif %>
-\end{center}
-
-<% if basics.summary %>
-%-----------SUMMARY-----------------
-<< section("summary", "Summary") >>
-<< basics.summary | tex >>
-
-<% endif %>
-<% if education and education | length %>
-%-----------EDUCATION-----------------
-<< section("education", "Education") >>
-\begin{description}
-<% for school in education %>
-<< entry(school.institution, school.location, [school.studyType, school.area, school.score] | select | join(", "), (school | dates) if school.startDate else (school.endDate | date), school.highlights) >>
-<% endfor %>
-\end{description}
-
-<% endif %>
-<% set jobs = work | inSection %>
-<% if jobs | length %>
-%-----------EXPERIENCE-----------------
-<< section("work", "Professional Experience") >>
-\begin{description}
-<% for job in jobs %>
-<< entry(job.name, job.location, job.position, job | dates, job.highlights) >>
-<% endfor %>
-\end{description}
-
-<% endif %>
-<% set research = work | inSection("research") %>
-<% if research | length %>
-%-----------RESEARCH-----------------
-<< section("research", "Research") >>
-\begin{description}
-<% for job in research %>
-<< entry(job.name, job.location, job.position, job | dates, job.highlights) >>
-<% endfor %>
-\end{description}
-
-<% endif %>
-<% if publications and publications | length %>
-%-----------PUBLICATIONS-----------------
-<< section("publications", "Publications") >>
-<% for pub in publications %>
-\noindent\hangindent=1.5em <% if pub.authors %><< pub.authors | join(", ") | tex | bold(pub.author) >> <% endif %>(<< pub.releaseDate | date >>). << pub.name | tex >>. \textit{<< pub.publisher | tex >>}<% if pub.volume %>, << pub.volume | tex >><% endif %>.<% if pub.url %> \href{<< pub.url | url >>}{<< pub.url | displayUrl | tex >>}<% endif %>
-
-\vspace{4pt}
-<% endfor %>
-
-<% endif %>
-<% set service = volunteer | inSection %>
-<% if service | length %>
-%-----------VOLUNTEER-----------------
-<< section("volunteer", "Volunteer Service") >>
-\begin{description}
-<% for role in service %>
-<< entry(role.organization, role.location, role.position, role | dates, role.highlights) >>
-<% endfor %>
-\end{description}
-
-<% endif %>
-<% set leadership = volunteer | inSection("leadership") %>
-<% if leadership | length %>
-%-----------LEADERSHIP-----------------
-<< section("leadership", "Leadership") >>
-\begin{description}
-<% for role in leadership %>
-<< entry(role.organization, role.location, role.position, role | dates, role.highlights) >>
-<% endfor %>
-\end{description}
-
-<% endif %>
-<% if awards and awards | length %>
-%-----------AWARDS-----------------
-<< section("awards", "Honors & Awards") >>
-\begin{description}
-<% for award in awards %>
-  \item \textbf{<< award.title | tex >>} $|$ << award.awarder | tex >> $|$ << award.date | date >><% if award.endDate %>--<< award.endDate | date >><% endif %>
-
-<% endfor %>
-\end{description}
-
-<% endif %>
-<% if skills and skills | length %>
-%-----------SKILLS-----------------
-<< section("skills", "Skills") >>
-\begin{description}
-<% for skill in skills %>
-  \item \textbf{<< skill.name | tex >>:} << skill.keywords | join(", ") | tex >>
-<% endfor %>
-\end{description}
-
-<% endif %>
-<% if certificates and certificates | length %>
-%-----------CERTIFICATES-----------------
-<< section("certificates", "Certifications") >>
-\begin{description}
-<% for cert in certificates %>
-<< entry(cert.name, cert.location, cert.role or cert.issuer, (cert | dates) if cert.startDate else (cert.date | date), cert.highlights) >>
-<% endfor %>
-\end{description}
-
-<% endif %>
-<% if (languages and languages | length) or (interests and interests | length) %>
-%-----------LANGUAGES & INTERESTS-----------------
-<< section("languages", "Languages & Interests") >>
-<% if languages and languages | length %>
-\begin{description}
-  \item \textbf{Languages:} <% for lang in languages %><< lang.language | tex >><% if lang.fluency %> (<< lang.fluency | tex >>)<% endif %><% if not loop.last %>, <% endif %><% endfor %>
-
-\end{description}
-<% endif %>
-<% if interests and interests | length %>
-\begin{itemize}
-<% for interest in interests %>
-  \item << interest.name | tex >><% if interest.keywords %>: << interest.keywords | join(", ") | tex >><% endif %>
-
-<% endfor %>
-\end{itemize}
-<% endif %>
-
-<% endif %>
+<% include "cv/sections/heading.tex" %>
+<% include "cv/sections/summary.tex" %>
+<% include "cv/sections/education.tex" %>
+<% include "cv/sections/experience.tex" %>
+<% include "cv/sections/research.tex" %>
+<% include "cv/sections/publications.tex" %>
+<% include "cv/sections/volunteer.tex" %>
+<% include "cv/sections/leadership.tex" %>
+<% include "cv/sections/awards.tex" %>
+<% include "cv/sections/skills.tex" %>
+<% include "cv/sections/certificates.tex" %>
+<% include "cv/sections/languages-interests.tex" %>
 \end{document}

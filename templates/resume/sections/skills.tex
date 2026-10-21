@@ -1,0 +1,14 @@
+<% if (skills and skills | length) or (publications and publications | length) %>
+%-----------SKILLS-----------------
+
+\section{Skills}
+\begin{description}
+<% for skill in skills %>
+  \item \textbf{<< skill.name | tex >>:} << skill.keywords | join(", ") | tex >>
+<% endfor %>
+<% if publications | length %>
+  \item \textbf{Writing:} <% for post in publications %>\href{<< post.url | url >>}{<< post.name | tex >>}<% if not loop.last %>; <% endif %><% endfor %>
+<% endif %>
+\end{description}
+
+<% endif %>
