@@ -42,3 +42,11 @@ jobs:
       contents: read
     with:
       template-ref: ${{ github.event.pull_request.head.sha || github.sha }}
+  cv:
+    uses: ./.github/workflows/build-resume.yml
+    permissions:
+      contents: read
+    with:
+      template: cv
+      output: cv
+      template-ref: ${{ github.event.pull_request.head.sha || github.sha }}

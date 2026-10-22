@@ -59,7 +59,7 @@ jobs:
         run: |
           sudo apt-get update -q
           sudo apt-get install -yq --no-install-recommends \
-            texlive-latex-base texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended
+            texlive-latex-base texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended lmodern
       - name: Install template
         run: pnpm install --frozen-lockfile --prod --dir .resume-template
       - name: Build PDF
