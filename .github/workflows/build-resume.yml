@@ -7,6 +7,7 @@
 #       uses: aranlucas/resume-template/.github/workflows/build-resume.yml@main
 #       with:
 #         output: Jane_Doe_Resume
+#         runs-on: blacksmith-4vcpu-ubuntu-2404  # optional, default ubuntu-latest
 
 name: Build resume
 
@@ -29,10 +30,14 @@ on:
         description: Ref of aranlucas/resume-template to build with
         type: string
         default: main
+      runs-on:
+        description: Runner label for the build job
+        type: string
+        default: ubuntu-latest
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runs-on }}
     timeout-minutes: 15
     permissions:
       contents: read
