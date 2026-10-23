@@ -3,6 +3,12 @@
 name: PDF
 on:
   pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
+      - converted_to_draft
     paths:
       [
         resume.json,
@@ -37,6 +43,8 @@ concurrency:
   cancel-in-progress: true
 jobs:
   pdf:
+    if: ${{ (!github.event.pull_request.draft) && github.event.pull_request.draft !=
+      true }}
     uses: ./.github/workflows/build-resume.yml
     permissions:
       contents: read
@@ -50,3 +58,4 @@ jobs:
       template: cv
       output: cv
       template-ref: ${{ github.event.pull_request.head.sha || github.sha }}
+    if: ${{ github.event.pull_request.draft != true }}
