@@ -18,17 +18,6 @@ import { onTestFinished, test } from "vitest";
 import { buildPdf } from "@lib/index.mjs";
 import { fixture } from "@test/fixture.mjs";
 
-// Keep compiler tests independent of the internship-rendering regressions.
-function buildFixture() {
-  const data = fixture();
-
-  for (const job of data.work) {
-    job.position = "Engineer";
-  }
-
-  return data;
-}
-
 // Real child process + temporary filesystem, with only the TeX executable replaced.
 function harness(mode = "success") {
   const directory = mkdtempSync(join(tmpdir(), "resume-build-test-"));
@@ -66,7 +55,7 @@ for (const mode of ["fail", "no-pdf"]) {
     writeFileSync(`${out}.tex`, "known-good TeX");
     writeFileSync(`${out}.pdf`, "known-good PDF");
     assert.throws(
-      () => buildPdf(buildFixture(), out),
+      () => buildPdf(fixture(), out),
       mode === "fail"
         ? /pdflatex failed.*see [\s\S]*synthetic compiler failure/
         : /pdflatex produced no PDF/,
@@ -80,7 +69,7 @@ for (const mode of ["fail", "no-pdf"]) {
 
 test("successful PDF builds publish both files without shell escape or changing the destination cwd", () => {
   const { directory, out } = harness();
-  buildPdf(buildFixture(), out);
+  buildPdf(fixture(), out);
   assert.match(readFileSync(`${out}.tex`, "utf8"), /Sep 2026 -- Present/);
   assert.equal(readFileSync(`${out}.pdf`, "utf8"), "synthetic complete PDF");
   const invocation = JSON.parse(readFileSync(join(directory, "invocation.json"), "utf8"));
@@ -96,7 +85,7 @@ test("PDF builds retain relative input access through a symlinked destination", 
   mkdirSync(destination);
   symlinkSync(destination, alias, "dir");
   writeFileSync(join(destination, "relative-input.tex"), "destination-relative input");
-  buildPdf(buildFixture(), join(alias, "document"));
+  buildPdf(fixture(), join(alias, "document"));
 
   const invocation = JSON.parse(readFileSync(join(directory, "invocation.json"), "utf8"));
   assert.equal(realpathSync(invocation.cwd), realpathSync(destination));
@@ -110,7 +99,7 @@ test("PDF builds retain relative input access through a symlinked destination", 
 
 test("buildPdf validates before filesystem writes or TeX execution", () => {
   const { directory, out } = harness();
-  const data = buildFixture();
+  const data = fixture();
   data.work[0].startDate = "2026-09-01";
   assert.throws(() => buildPdf(data, out), /\/work\/0\/startDate/);
   assert.equal(existsSync(`${out}.tex`), false);
@@ -121,7 +110,7 @@ test("buildPdf validates before filesystem writes or TeX execution", () => {
 test("CLI preserves its positional output and --template cv contract", () => {
   const { directory, out } = harness();
   const input = join(directory, "input.json");
-  writeFileSync(input, JSON.stringify(buildFixture()));
+  writeFileSync(input, JSON.stringify(fixture()));
 
   const stdout = execFileSync(
     process.execPath,
@@ -148,7 +137,7 @@ test("CLI usage errors retain stderr and a failing exit status", () => {
 test("CLI validation errors do not invoke TeX or print a success message", () => {
   const { directory, out } = harness();
   const input = join(directory, "invalid.json");
-  const data = buildFixture();
+  const data = fixture();
   data.work[0].startDate = "2026-09-01";
   writeFileSync(input, JSON.stringify(data));
 
@@ -168,7 +157,7 @@ test("CLI validation errors do not invoke TeX or print a success message", () =>
 test("CLI compiler failures preserve diagnostics and previous output files", () => {
   const { directory, out } = harness("fail");
   const input = join(directory, "input.json");
-  writeFileSync(input, JSON.stringify(buildFixture()));
+  writeFileSync(input, JSON.stringify(fixture()));
   writeFileSync(`${out}.tex`, "known-good TeX");
   writeFileSync(`${out}.pdf`, "known-good PDF");
 
