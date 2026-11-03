@@ -1,6 +1,6 @@
 # Resume Template roadmap
 
-Proposed 2026-10-26. Proposed library improvements after Digits/MCP priorities.
+Library improvements proposed 2026-10-26, after Digits/MCP priorities.
 Keep the product a small renderer with generic placeholder examples.
 
 ## Ordered releases
