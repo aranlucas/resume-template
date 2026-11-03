@@ -1,14 +1,7 @@
 # Resume Template roadmap
 
-Updated 2026-10-26. Proposed library improvements after Digits/MCP priorities.
+Library improvements proposed 2026-10-26, after Digits/MCP priorities.
 Keep the product a small renderer with generic placeholder examples.
-
-## Starting point
-
-At `90ff5ede575f0a8412902ca22810ccce09128eb8`, the [renderer](README.md)
-already validates JSON Resume, supports one-page and CV layouts, exposes section
-overrides through the JavaScript API, and provides a reusable artifact-producing
-workflow. Failed compilation preserves previous outputs.
 
 ## Ordered releases
 
@@ -38,6 +31,5 @@ Start with CLI section customization, using one synthetic fixture and an
 existing consumer override. Compare setup steps and custom glue with the API
 path. Keep the existing Vitest/compiler and real-PDF test suites as the checks.
 
-Follow [template rules](AGENTS.md): preserve extractable text, escaping and the
-one-page layout contract. Never copy real resume content into public examples.
-Content ownership and public redaction stay in the consuming repositories.
+Follow the [template rules](AGENTS.md). Content ownership and public redaction
+stay in the consuming repositories.

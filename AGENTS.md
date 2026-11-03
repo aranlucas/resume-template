@@ -1,82 +1,48 @@
 # Resume Template — Agent Notes
 
-This repository renders a JSON Resume file into a LaTeX resume. The layouts are
-`templates/resume.tex` (one page) and `templates/cv.tex` (multi-page CV) (Nunjucks with LaTeX-safe delimiters: `<< value | filter >>`,
-`<% for %>`, `<# comment #>`; escape every value with `| tex`, or `| url` inside `\href{}`).
-Other repos (aranlucas/resume with `resume`, aranlucas/resume-yani with `cv`) build their PDFs with it through the reusable
-workflow and the `resume-template` CLI, so layout changes reach them too.
+Keep public examples generic (Jane Doe, Company A/B/C, State University), including
+fixtures and rendered artifacts. Real resume content belongs in consumer repos.
+`resume.tex` and `resume.pdf` are generated; edit `resume.json` or the templates
+and regenerate them. See [README.md](README.md) for setup and section overrides.
 
-## Main Files
+## Template changes
 
-- `templates/resume.tex`, `templates/cv.tex` — the LaTeX layouts.
-- `templates/resume/sections/`, `templates/cv/sections/` — section partials included
-  by each layout. Keep empty-section checks in the partials; consumers can override
-  individual partials through `searchPaths` without copying a full layout.
-- `lib/` — loading, schema validation, template filters, pdflatex; `bin/` — the CLI.
-- `resume.json` — placeholder example content.
-- `resume.tex` / `resume.pdf` — generated from `resume.json`, checked in so the rendered
-  result is visible on GitHub. Never edit `resume.tex` by hand.
-- `.github/workflows/build-resume.yml` — reusable workflow other repos call.
-- `README.md` — setup and customization docs for people using the template.
+- Keep the sample resume on one page; the CV may span pages.
+- Preserve `\resumeEntry{org}{location}{title}{dates}` and the `maincolor` accent.
+- Keep `\input{glyphtounicode}` and `\pdfgentounicode=1` for ATS text extraction.
+- Use Nunjucks delimiters `<< value >>`, `<% block %>`, and `<# comment #>`.
+  Escape rendered values with `| tex`, or `| url` inside `\href{}` targets.
+- Keep empty-section checks in the partials so consumers can override individual
+  sections through `searchPaths` without copying a layout.
 
-## Content Rules
-
-The content is deliberately placeholder text (Jane Doe, Company A/B/C, State University).
-Keep it that way. Do not substitute real names, employers, dates, metrics, or credentials
-into this repository — it is a public template, not anyone's actual resume.
-
-## Editing Strategy
-
-- Keep `resume.tex` output to one page.
-- Preserve the existing structure: the `\resumeEntry{org}{location}{title}{dates}` macro
-  and the `maincolor` accent are the template's defining features.
-- Leave `\input{glyphtounicode}` and `\pdfgentounicode=1` in place; they are what keep the
-  PDF text-extractable for applicant tracking systems.
-
-## Build And Verify
-
-```bash
-pnpm install    # once
-pnpm pdf        # validates resume.json, renders resume.tex, runs pdflatex
-```
-
-If `pdflatex` is not on your `PATH`, see README.md. After a template change, also
-rebuild the consumers (`pnpm pdf` in `../resume` and `../resume-yani`) to check real
-content still renders cleanly, and `resume` still fits on one page.
-
-Verify the generated PDF:
+After template changes, run `pnpm pdf` and inspect the result:
 
 ```bash
 pdfinfo resume.pdf
 pdftotext resume.pdf -
+mkdir -p tmp
 pdftoppm -png -r 180 resume.pdf tmp/preview
 ```
 
-Expected checks:
+Require one page, readable contact text, no overlap, clipping, missing glyphs or
+cramped footer, and no `Overfull`, `Underfull`, `Warning` or `Error` lines in the
+final `resume.log`. Remove temporary previews afterward.
 
-- `pdfinfo` reports 1 page.
-- `pdftotext` shows clean, readable contact info with no garbage characters.
-- The rendered PNG has no overlap, clipping, missing glyphs, or cramped footer.
-- `resume.log` has no `Overfull`, `Underfull`, `Warning`, or `Error` lines from the final
-  build.
+Layout changes also reach `aranlucas/resume` (resume) and `aranlucas/resume-yani`
+(CV) through the reusable workflow and CLI. When authorized to work in those
+consumer checkouts, run their `pnpm pdf` builds and inspect PDF/text output;
+the resume must still fit on one page.
 
-Remove temporary render outputs before finishing unless the user wants to keep them.
+## Implementation choices
 
-## Scripts: native first
+Before adding a script, try existing tool flags, declarative config, a maintained
+plugin, then a one-line native package command. Put assertions in Vitest. A custom
+script must implement repository-specific behavior; its first comment explains
+why native tooling cannot provide it, it has Vitest coverage, and its PR quotes
+that comment.
 
-Before adding a script file (`scripts/`, `bin/`, `tools/`, root `*.sh|*.py|*.mjs`) or a package script that runs one, take the first rung that works:
-
-1. A flag or subcommand of a tool the repo already uses (`<tool> --help`).
-2. Declarative config for that tool (`pnpm-workspace.yaml`, `vitest.config.mjs`, `oxfmt.config.ts`).
-3. A maintained plugin for that tool.
-4. A one-line package.json script that calls a native command.
-5. A test in the existing runner (Vitest), for anything that asserts.
-6. A custom script, only for behavior specific to this repo. Its first comment names the native rung it couldn't use and why. It has a test in the existing runner, and the PR that adds it quotes that comment.
-
-## Code: libraries first
-
-Before hand-writing general-purpose code, use a well-maintained library: actively released, widely adopted, typed, and a fit for this stack. Reach for one already in the dependencies first. Write custom code for domain logic and for the glue no library covers. A PR that adds a dependency says why it was picked; a PR that hand-writes something a library covers names the library and why it didn't fit.
-
-- Resume validation → `@jsonresume/schema` with `ajv` and `ajv-formats`.
-- LaTeX template rendering → `nunjucks` with the existing LaTeX-safe delimiters and filters.
-- CLI arguments → `node:util`'s `parseArgs`.
+Use maintained libraries for general-purpose behavior, preferring existing
+dependencies: `@jsonresume/schema` with `ajv`/`ajv-formats` for validation,
+`nunjucks` for rendering, and `node:util`'s `parseArgs` for CLI arguments. A PR
+adding a dependency explains the choice; custom code replacing a library names
+the library and why it did not fit.
