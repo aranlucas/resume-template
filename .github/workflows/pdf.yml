@@ -11,11 +11,17 @@ on:
     paths:
       [
         resume.json,
+        resume.tex,
+        resume.pdf,
+        .node-version,
+        pnpm-workspace.yaml,
         templates/**,
         lib/**,
         bin/**,
         test/**,
         package.json,
+        vitest.config.mjs,
+        jsconfig.json,
         pnpm-lock.yaml,
         .oxlintrc.json,
         .github/workflows/*.yml,
@@ -25,11 +31,17 @@ on:
     paths:
       [
         resume.json,
+        resume.tex,
+        resume.pdf,
+        .node-version,
+        pnpm-workspace.yaml,
         templates/**,
         lib/**,
         bin/**,
         test/**,
         package.json,
+        vitest.config.mjs,
+        jsconfig.json,
         pnpm-lock.yaml,
         .oxlintrc.json,
         .github/workflows/*.yml,
@@ -48,12 +60,14 @@ jobs:
     permissions:
       contents: read
     with:
+      verify: true
       template-ref: ${{ github.event.pull_request.head.sha || github.sha }}
   cv:
     uses: ./.github/workflows/build-resume.yml
     permissions:
       contents: read
     with:
+      artifact-name: cv
       template: cv
       output: cv
       template-ref: ${{ github.event.pull_request.head.sha || github.sha }}
