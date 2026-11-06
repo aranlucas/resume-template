@@ -65,6 +65,10 @@ jobs:
           install: false
       - name: Install TeX Live
         run: |
+          # The hosted Azure mirror repeatedly stalled TeX downloads until job timeout.
+          if [ -f /etc/apt/apt-mirrors.txt ]; then
+            printf '%s\n' 'https://archive.ubuntu.com/ubuntu' | sudo tee /etc/apt/apt-mirrors.txt
+          fi
           sudo apt-get update -q
           sudo apt-get install -yq --no-install-recommends \
             texlive-latex-base texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended texlive-fonts-extra lmodern poppler-utils

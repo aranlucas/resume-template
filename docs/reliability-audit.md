@@ -81,3 +81,14 @@ CI on `564f3e2` passed the existing Vitest regressions and the baseline proof
 (two expected pre-fix mailto failures). Lint caught an unnecessary async callback,
 a missing blank line and anonymous default export in the new e2e files; corrected
 without changing assertions. Real PDF/e2e validation is still pending.
+
+## CI infrastructure follow-up
+
+On `57005a3`, lint, Vitest and baseline proof passed, as did all five real-PDF
+regressions, both e2e CLI/PDF journeys and the one-page sample artifact. The
+separate CV artifact job twice exhausted its 15-minute limit downloading TeX
+from `azure.archive.ubuntu.com`, before reaching compilation (jobs 128198842735
+and 128208069835 in run 42306994533). On hosted images with an apt mirror list,
+select Ubuntu’s primary HTTPS archive using that existing declarative file.
+Self-hosted runners without that file retain their configured sources. No
+packages, assertions or validation gates are removed. Fresh CI is required.
