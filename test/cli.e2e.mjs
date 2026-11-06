@@ -8,8 +8,9 @@ import { test } from "e2e";
 import { fixture } from "./fixture.mjs";
 
 for (const template of ["resume", "cv"]) {
-  test(`${template}: CLI builds a PDF with valid email braces and preserves it on invalid input`, async () => {
+  test(`${template}: CLI builds a PDF with valid email braces and preserves it on invalid input`, () => {
     const root = mkdtempSync(join(tmpdir(), "resume-cli-e2e-"));
+
     try {
       const input = join(root, "resume.json");
       const output = join(root, "Jane Doe Resume");

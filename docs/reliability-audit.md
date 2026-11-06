@@ -76,3 +76,8 @@ layouts; fixed by prefixing evidence with `inputs.artifact-name`. No other concr
 worthwhile implementation findings remained. Same-output concurrent publication and
 loosely typed extension fields were considered without inventing new API guarantees.
 CI results remain pending; no local tests or builds were executed.
+
+CI on `564f3e2` passed the existing Vitest regressions and the baseline proof
+(two expected pre-fix mailto failures). Lint caught an unnecessary async callback,
+a missing blank line and anonymous default export in the new e2e files; corrected
+without changing assertions. Real PDF/e2e validation is still pending.
