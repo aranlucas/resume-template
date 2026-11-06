@@ -138,3 +138,8 @@ The real-PDF checks use synthetic data and the public placeholder sample. The `c
 layout additionally requires Latin Modern and the `fontawesome` LaTeX package
 (typically `lmodern` and `texlive-fonts-extra` on Debian/Ubuntu). Check your TeX
 installation before running `test:pdf`.
+
+CI also runs `pnpm test:e2e` with the pinned `e2e` runner's engine-less CLI target.
+It invokes the public CLI, extracts real PDF contact text, and checks that invalid
+input leaves the previous output intact. No model credentials are required.
+See [the reliability audit](docs/reliability-audit.md) for findings and scope.

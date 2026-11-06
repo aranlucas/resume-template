@@ -157,3 +157,13 @@ test("document validation checks supported dates in nested extension fields", ()
   data.meta.entries[0].date = "2026-13";
   assert.throws(() => renderResumeDocument(data), /Resume \/meta\/entries\/0\/date/);
 });
+
+for (const template of ["resume", "cv"]) {
+  test(`${template}: valid email braces stay inside the mailto target`, () => {
+    const data = fixture();
+    data.basics.email = "jane}doe@example.com";
+    const tex = renderResumeDocument(data, { template });
+    assert.ok(tex.includes(String.raw`\href{mailto:jane\%7Ddoe@example.com}{`));
+    assert.ok(tex.includes(String.raw`jane\}doe@example.com`));
+  });
+}

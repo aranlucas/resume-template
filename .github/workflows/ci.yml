@@ -42,3 +42,39 @@ jobs:
 
           - name: Test
             run: pnpm test
+
+  regression-proof:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: pnpm/setup@fa36a5ef7dcdefc3a7cb25655c122e00cf6e636e # v3.1.2
+        with:
+          cache: true
+          require-lockfile: true
+      - name: Prove mailto regressions fail on the audited baseline
+        run: |
+          git show 54594ca:lib/render.mjs > lib/render.mjs
+          if pnpm exec vitest run test/render.test.mjs --testNamePattern 'valid email braces' --reporter=json --outputFile=baseline-regression.json; then
+            echo 'Expected the baseline renderer to fail the mailto regressions'
+            exit 1
+          fi
+          node --input-type=module <<'JS'
+          import assert from 'node:assert/strict';
+          import { readFileSync } from 'node:fs';
+          const report = JSON.parse(readFileSync('baseline-regression.json', 'utf8'));
+          const failed = report.testResults.flatMap(file => file.assertionResults).filter(test => test.status === 'failed');
+          assert.equal(failed.length, 2);
+          for (const test of failed) {
+            assert.match(test.title, /valid email braces/);
+            assert.match(test.failureMessages.join('\n'), /tex.includes/);
+          }
+          JS
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: baseline-regression-proof
+          path: baseline-regression.json
