@@ -65,6 +65,10 @@ jobs:
           install: false
       - name: Install TeX Live
         run: |
+          # The hosted Azure mirror repeatedly stalled TeX downloads until job timeout.
+          if [ -f /etc/apt/apt-mirrors.txt ]; then
+            printf '%s\n' 'https://archive.ubuntu.com/ubuntu' | sudo tee /etc/apt/apt-mirrors.txt
+          fi
           sudo apt-get update -q
           sudo apt-get install -yq --no-install-recommends \
             texlive-latex-base texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended texlive-fonts-extra lmodern poppler-utils
@@ -73,7 +77,19 @@ jobs:
       - name: Verify PDF behavior
         if: inputs.verify
         working-directory: .resume-template
-        run: pnpm test:pdf
+        run: |
+          pnpm test:pdf
+          pnpm test:e2e
+      - name: Upload CLI regression evidence
+        if: ${{ always() && inputs.verify }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: ${{ inputs.artifact-name }}-cli-regression-evidence
+          include-hidden-files: true
+          path: |
+            .resume-template/.e2e/report.json
+            .resume-template/.e2e/junit.xml
+            .resume-template/.e2e/results
       - name: Build PDF
         env:
           RESUME: ${{ inputs.resume }}
