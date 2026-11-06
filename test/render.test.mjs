@@ -150,12 +150,10 @@ test("custom Markdown filters and TeX search path overrides remain available", (
   assert.equal(renderResumeDocument(data, { searchPaths: [directory] }), "Example Person");
 });
 
-test("nested date validation accepts valid months and rejects invalid months in arrays", async () => {
-  const { assertMonthDates } = await import("@lib/resume.mjs");
-
-  assert.doesNotThrow(() => assertMonthDates("Resume", { entries: [{ date: "2026-10" }] }));
-  assert.throws(
-    () => assertMonthDates("Resume", { entries: [{ date: "2026-13" }] }),
-    /Resume \/entries\/0\/date/,
-  );
+test("document validation checks supported dates in nested extension fields", () => {
+  const data = fixture();
+  data.meta = { entries: [{ date: "2026-10" }] };
+  assert.doesNotThrow(() => renderResumeDocument(data));
+  data.meta.entries[0].date = "2026-13";
+  assert.throws(() => renderResumeDocument(data), /Resume \/meta\/entries\/0\/date/);
 });
